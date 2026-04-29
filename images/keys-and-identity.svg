@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 340" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+  <rect width="760" height="340" fill="#fafaf7"/>
+
+  <!-- Left panel title -->
+  <text x="180" y="32" text-anchor="middle" font-size="14" font-weight="600" fill="#333">When you post</text>
+
+  <!-- text input -->
+  <rect x="40" y="60" width="110" height="60" rx="4" fill="#ffffff" stroke="#333" stroke-width="1.5"/>
+  <text x="95" y="86" text-anchor="middle" font-size="13" fill="#222">your text</text>
+  <text x="95" y="104" text-anchor="middle" font-size="11" fill="#888">+ headers</text>
+
+  <!-- private key -->
+  <rect x="40" y="180" width="110" height="60" rx="4" fill="#fdeeee" stroke="#933" stroke-width="1.5"/>
+  <text x="95" y="206" text-anchor="middle" font-size="13" fill="#933">private key</text>
+  <text x="95" y="224" text-anchor="middle" font-size="11" fill="#933" font-style="italic">(secret)</text>
+
+  <!-- arrows into combiner -->
+  <line x1="155" y1="92" x2="218" y2="155" stroke="#666" stroke-width="1.5"/>
+  <line x1="155" y1="208" x2="218" y2="170" stroke="#666" stroke-width="1.5"/>
+
+  <!-- combiner -->
+  <circle cx="234" cy="162" r="20" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  <text x="234" y="168" text-anchor="middle" font-size="16" fill="#333">+</text>
+
+  <!-- arrow to signed post -->
+  <line x1="255" y1="162" x2="290" y2="162" stroke="#666" stroke-width="1.5"/>
+
+  <!-- signed post -->
+  <rect x="290" y="125" width="80" height="75" rx="4" fill="#eef2f0" stroke="#333" stroke-width="1.5"/>
+  <text x="330" y="155" text-anchor="middle" font-size="12" fill="#333">signed</text>
+  <text x="330" y="172" text-anchor="middle" font-size="12" fill="#333">post</text>
+  <text x="330" y="190" text-anchor="middle" font-size="10" fill="#666" font-style="italic">(public)</text>
+
+  <!-- divider -->
+  <line x1="400" y1="40" x2="400" y2="290" stroke="#bbb" stroke-width="1" stroke-dasharray="3,3"/>
+
+  <!-- Right panel title -->
+  <text x="585" y="32" text-anchor="middle" font-size="14" font-weight="600" fill="#333">When someone reads</text>
+
+  <!-- signed post (right) -->
+  <rect x="430" y="60" width="110" height="60" rx="4" fill="#eef2f0" stroke="#333" stroke-width="1.5"/>
+  <text x="485" y="86" text-anchor="middle" font-size="13" fill="#333">signed</text>
+  <text x="485" y="104" text-anchor="middle" font-size="13" fill="#333">post</text>
+
+  <!-- public key -->
+  <rect x="430" y="180" width="110" height="60" rx="4" fill="#eef5ee" stroke="#363" stroke-width="1.5"/>
+  <text x="485" y="206" text-anchor="middle" font-size="13" fill="#363">public key</text>
+  <text x="485" y="224" text-anchor="middle" font-size="11" fill="#363" font-style="italic">(your DID)</text>
+
+  <!-- arrows to checker -->
+  <line x1="545" y1="92" x2="608" y2="155" stroke="#666" stroke-width="1.5"/>
+  <line x1="545" y1="208" x2="608" y2="170" stroke="#666" stroke-width="1.5"/>
+
+  <!-- checker -->
+  <circle cx="624" cy="162" r="20" fill="#fff" stroke="#333" stroke-width="1.5"/>
+  <text x="624" y="168" text-anchor="middle" font-size="14" fill="#333">?</text>
+
+  <!-- arrow to result -->
+  <line x1="645" y1="162" x2="680" y2="162" stroke="#666" stroke-width="1.5"/>
+
+  <!-- result -->
+  <rect x="680" y="132" width="60" height="60" rx="4" fill="#fff" stroke="#363" stroke-width="1.5"/>
+  <text x="710" y="158" text-anchor="middle" font-size="11" fill="#363">yes —</text>
+  <text x="710" y="174" text-anchor="middle" font-size="11" fill="#363">it's you</text>
+
+  <!-- bottom note -->
+  <text x="380" y="320" text-anchor="middle" font-size="11" fill="#666" font-style="italic">Your private key never leaves your device. Only the post and the signature travel.</text>
+</svg>

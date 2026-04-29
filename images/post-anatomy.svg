@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif">
+  <rect width="680" height="460" fill="#fafaf7"/>
+
+  <!-- left-side caption -->
+  <text x="20" y="50" font-size="13" font-weight="600" fill="#333">A Swamp post</text>
+  <text x="20" y="72" font-size="11" fill="#666">is a short text file.</text>
+  <text x="20" y="88" font-size="11" fill="#666">Anyone can read it</text>
+  <text x="20" y="104" font-size="11" fill="#666">in any text editor.</text>
+
+  <!-- the document -->
+  <rect x="180" y="40" width="320" height="380" rx="6" fill="#ffffff" stroke="#222" stroke-width="2"/>
+
+  <!-- header section -->
+  <rect x="180" y="40" width="320" height="150" fill="#f1ede2" stroke="#222" stroke-width="2"/>
+  <text x="200" y="66" font-size="13" font-family="ui-monospace, SFMono-Regular, monospace" fill="#444">From: River Lover</text>
+  <text x="200" y="88" font-size="13" font-family="ui-monospace, SFMono-Regular, monospace" fill="#444">DID: did:key:z6Mk...8XaP</text>
+  <text x="200" y="110" font-size="13" font-family="ui-monospace, SFMono-Regular, monospace" fill="#444">Date: 2026-04-23T08:15-0700</text>
+  <text x="200" y="132" font-size="13" font-family="ui-monospace, SFMono-Regular, monospace" fill="#444">Subject: Spring on the river</text>
+  <text x="200" y="154" font-size="13" font-family="ui-monospace, SFMono-Regular, monospace" fill="#444">Content-Type: application/swamp;</text>
+  <text x="200" y="172" font-size="13" font-family="ui-monospace, SFMono-Regular, monospace" fill="#444">  kind=post; v=0.1.0</text>
+
+  <!-- body section -->
+  <text x="200" y="220" font-size="14" fill="#222">Walked along the river this</text>
+  <text x="200" y="240" font-size="14" fill="#222">morning. Three herons. The water</text>
+  <text x="200" y="260" font-size="14" fill="#222">smells different in spring —</text>
+  <text x="200" y="280" font-size="14" fill="#222">colder and greener at once.</text>
+
+  <!-- divider before signature -->
+  <line x1="180" y1="325" x2="500" y2="325" stroke="#222" stroke-width="2" stroke-dasharray="4,3"/>
+
+  <!-- signature section -->
+  <rect x="180" y="325" width="320" height="95" fill="#eef2f0" stroke="#222" stroke-width="2"/>
+  <text x="200" y="352" font-size="12" font-family="ui-monospace, SFMono-Regular, monospace" fill="#444">signature: ed25519:</text>
+  <text x="200" y="374" font-size="11" font-family="ui-monospace, SFMono-Regular, monospace" fill="#666">  8K3mLp9q...wXfR2nTb...</text>
+  <text x="200" y="392" font-size="11" font-family="ui-monospace, SFMono-Regular, monospace" fill="#666">  vC8aK4ePm...9DgL3tNh</text>
+
+  <!-- right-side labels -->
+  <line x1="500" y1="115" x2="560" y2="115" stroke="#888" stroke-width="1"/>
+  <text x="568" y="110" font-size="13" font-weight="600" fill="#333">Header</text>
+  <text x="568" y="128" font-size="11" fill="#666">who wrote it,</text>
+  <text x="568" y="142" font-size="11" fill="#666">when, what kind</text>
+
+  <line x1="500" y1="250" x2="560" y2="250" stroke="#888" stroke-width="1"/>
+  <text x="568" y="245" font-size="13" font-weight="600" fill="#333">Body</text>
+  <text x="568" y="263" font-size="11" fill="#666">the message itself</text>
+
+  <line x1="500" y1="372" x2="560" y2="372" stroke="#888" stroke-width="1"/>
+  <text x="568" y="367" font-size="13" font-weight="600" fill="#333">Signature</text>
+  <text x="568" y="385" font-size="11" fill="#666">mathematical</text>
+  <text x="568" y="399" font-size="11" fill="#666">seal of the author</text>
+</svg>
