@@ -1,6 +1,6 @@
 # Related work
 
-*Swamp sits in a neighborhood of existing work. This directory maps the relationships — what Swamp borrows, what it deliberately diverges from, and what it pairs well with. Each note orients an unfamiliar reader and then explains the Swamp relationship. None are exhaustive literature surveys.*
+*Swamp sits in a neighborhood of existing work. This directory maps the relationships — what Swamp borrows, what it deliberately diverges from, what it pairs well with, and what it lands near by convergent design. Each note orients an unfamiliar reader and then explains the Swamp relationship. None are exhaustive literature surveys.*
 
 ---
 
@@ -18,6 +18,7 @@
 - **[indieweb-microformats.md](indieweb-microformats.md)** — h-entry, h-card, h-event, `bookmark-of`, `like-of`, RSVP conventions. The vocabulary Swamp borrows for Profile, Bookmark, Event, and RSVP kinds.
 - **[rss-and-atom.md](rss-and-atom.md)** — the prior art for "the author's stream, syndicated" on the open web. Swamp lands somewhere different (gossip + sightings + IPFS, not a polled URL), and the contrast clarifies both.
 - **[blogosphere-and-linkrolls.md](blogosphere-and-linkrolls.md)** — the early-2000s blogosphere as cultural ancestor: blogrolls (the `known` why), link blogs (sightings), "via:" attribution, and the slow-attention reading rhythm.
+- **[blackboards-and-global-workspace.md](blackboards-and-global-workspace.md)** — Hearsay-II's blackboard architecture and Baars' Global Workspace Theory. Convergent architectural family rather than borrowed lineage: shared medium, no central orchestrator, opportunistic attention.
 - **[standards-inherited.md](standards-inherited.md)** — semver, BCP 47, ISO 8601, UTF-8, Base64. Small, stable standards Swamp leans on without re-specifying.
 - **[hubert.md](hubert.md)** — Blockchain Commons' Hubert dead-drop system, and the XID identity primitive Swamp hopes to adopt as a first-class option in a later release. Same IPFS substrate, mirror-image design commitments (private-by-design vs. public-by-design).
 - **[snapstack.md](snapstack.md)** — Peter Kaminski's 2025 work on IPFS for small-team collaborative document publishing. Own prior work that informs Swamp's IPNS caution and several operational choices.
