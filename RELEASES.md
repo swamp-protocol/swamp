@@ -6,6 +6,17 @@
 
 ## Release history
 
+### v0.4.0 — 2026-05-07
+
+Pre-release. Discovery release: re-introduces `Feed:` and adds `Following:`.
+
+- **`Feed:` header re-introduced**, redefined as locator-to-signed-CID-claim. The header carries a URL; a polite client GETs the URL and receives a signed Swamp envelope (`Content-Type: application/swamp; kind=feed-claim; v=0.4.0`) whose `Latest:` field names the author's most recent self-sighting CID and whose signature attests under the same key that signs the author's posts. URL-only locator for v0.4.0; DNS TXT and other forms reserved for later. Mutability lives at exactly one bounded point — the URL response — and nowhere else in the stack. The earlier v0.2 `Feed:` semantics (alternate transport for post bytes) are not revived; the new shape is locator only. SPEC §4.10 carries the full contract.
+- **`Following:` post kind added.** A signed blogroll-shaped artifact: each line of the body is `<DID> <whitespace> <Feed-URL>`, naming a feed the author is following at the time of publication. Body grammar parallels sightings (line-oriented, no prose mixed in); commentary, if any, lives in a sibling `kind=post`. Distinguished by `Content-Type: application/swamp; kind=following; v=0.4.0`. Snapshot semantics (latest by author is the live view; no `Supersedes:` chain). SPEC §11.
+- **Optional fragment syntax in `DID:` header values.** `did:key:z6Mk...#z6Mk...` is permitted; bare DIDs continue to work and are equivalent to the canonical-fragment form for `did:key`. Forward-compat hygiene for future DID methods with multi-key support; v0.4.0 readers parse and discard the fragment for `did:key`. SPEC §3.
+- **DID method language tightened.** `did:key` is **required**; other DID methods are **reserved for future spec versions** (replacing v0.2 / v0.3's "permitted" stance). The earlier wording under-specified verifier behavior — "permitted but unsupported" let authors publish posts that no implementation could verify. v0.4.0 commits to one method and reserves space for cleanly adding others later. SPEC §3.
+
+Wire-format additions are purely additive. A v0.3.0 reader encountering a v0.4.0 post sees `Feed:` as an unknown header (preserved per the minor-version rule), sees fragment-bearing DIDs as bare DIDs (the fragment is at the suffix), and doesn't recognize `kind=following` posts as parsable for body semantics — but envelope and signature still verify. v0.4.0 readers verify v0.3.0 posts with full parity.
+
 ### v0.3.0 — 2026-04-27
 
 Pre-release. Substrate consolidation and post-ref simplification.
