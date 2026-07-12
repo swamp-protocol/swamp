@@ -38,7 +38,7 @@ Changes to this document follow the same process as changes to any other spec do
 
 ## Scope of stewardship
 
-Stewards steward **the specification** — the bytes on the wire, the envelope, the semantics, the accompanying application and related-work notes, the governance of this document. Stewards do not control:
+Stewards steward **the specification** — the bytes on the wire, the envelope, the semantics, the accompanying application and related-work notes, the governance of this document. Stewards do NOT control:
 
 - What people post in Swamp. The medium is public and signed; authors are responsible for their own posts.
 - What readers trust. Trust is per-reader (see SPEC §11 Trust (non-protocol)).
