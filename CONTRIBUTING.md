@@ -60,6 +60,18 @@ Swamp releases are named after swamps of the world, alphabetical by minor versio
 
 Stewards ultimately pick the name. A proposal's quality matters more than its timing.
 
+## When implementations disagree
+
+As clients and tools appear, sooner or later someone will read another implementation's bytes and think *that's out of spec* — and you may find yourself on either side of that sentence. Either party may be right; the spec itself may be the problem. The routing:
+
+1. **Cite, don't characterize.** Point at the spec section by number *and* title, and — once the conformance corpus is public — at the specific fixture the output fails. "Your sighting bodies fail the §7.3 Canonical sighting body format fixtures" is checkable by both parties in private; "your sightings are wrong" is just a feeling with a signature on it. A shared corpus turns most interop disputes into mechanical questions, which is the kindest thing a dispute can become.
+2. **The fixture might be wrong.** A conformance corpus is itself an implementation of the spec and earns no special immunity. If you believe a fixture misreads the spec text, that's an ordinary issue against the corpus, argued from the spec's language.
+3. **The spec might be ambiguous.** If two careful readers built incompatible things from the same sentence, the sentence is the bug. File an issue quoting the ambiguous text and both readings; the fix is usually a PATCH-level clarification (see `RELEASES.md`).
+4. **The divergence might be intentional.** If what an implementation is *trying* to do isn't what core Swamp does, there are two honest homes for it: an **extension** (new headers, kinds, or body grammars — no permission needed; SPEC §10 Extensions) or, if it changes core semantics, a **legible fork** (SPEC §4.1.2 Forks — declare your own `Swamp-Version:` locator and let adoption arbitrate). Both are first-class outcomes, not consolation prizes.
+5. **Keep the conversation on the record.** The mechanics of landing a fix are GitHub issues and PRs, but the conversation of record belongs on Swamp itself (see `GOVERNANCE.md`, "Where Swamp is discussed") — signed posts, citations, and sightings, where the whole pond can weigh the arguments.
+
+There is no tribunal at the end of this ladder. Nobody certifies implementations, and the must-carry invariant (SPEC §10.1) means posts travel intact even from software other people believe is wrong. What the ecosystem converges on is decided the same way everything else here is decided: in the open, under signatures, by adoption.
+
 ## Conventions for section edits
 
 When editing `SPEC.md`:

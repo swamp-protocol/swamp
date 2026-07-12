@@ -28,6 +28,10 @@ If stewards and contributors genuinely cannot reconcile a disagreement, **forks 
 
 This is not a threat — it's the designed safety valve. Forking is not failure; it is what the protocol makes possible when stewardship breaks down on a specific question.
 
+## Disagreements between implementations
+
+Stewards do not referee implementations. There is no certification, no compliance mark, and no authority that can order software off the pond — the must-carry invariant (SPEC §10.1) means even posts from software others believe is out of spec still travel intact. What stewards maintain is the instruments the parties argue *with*: the spec text and, as it matures, a public conformance corpus. The routing for "we think you're out of spec" conversations — including the cases where the fixture or the spec itself turns out to be the bug, and the cases where the right answer is an extension or a legible fork — lives in `CONTRIBUTING.md`, "When implementations disagree."
+
 ## Changes to governance
 
 Changes to this document follow the same process as changes to any other spec document (see `CONTRIBUTING.md`): issue, discussion, pull request, steward approval. Governance changes specifically should be preceded by public discussion — governance that shifts silently loses the legibility that makes it worth having.
