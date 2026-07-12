@@ -40,4 +40,4 @@ Together, 822 / 5322 and MIME are the formal foundation of every email system on
 
 ---
 
-*Related-work note accompanying the Swamp v0.3.0 specification.*
+*Related-work note accompanying the Swamp v0.6.0 specification.*

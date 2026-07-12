@@ -50,4 +50,4 @@ Blackboard systems were studied through the 1980s (HEARSAY-III, BB1, GBB) and re
 
 ---
 
-*Related-work note accompanying the Swamp v0.3.0 specification.*
+*Related-work note accompanying the Swamp v0.6.0 specification.*

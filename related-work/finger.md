@@ -36,4 +36,4 @@ Finger was widely deployed on Unix systems through the 1990s, then largely retir
 
 ---
 
-*Related-work note accompanying the Swamp v0.3.0 specification.*
+*Related-work note accompanying the Swamp v0.6.0 specification.*

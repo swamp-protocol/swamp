@@ -105,4 +105,4 @@ The two protocols were designed by the same author in close temporal proximity, 
 
 ---
 
-*Related-work note accompanying the Swamp v0.3.0 specification.*
+*Related-work note accompanying the Swamp v0.6.0 specification.*

@@ -1,6 +1,6 @@
 # Application note: Markdown bodies and embedded media
 
-*Forward-looking application note. The current Swamp spec defines text bodies (SPEC §4 Post format) and a small set of post kinds (SPEC §7 Sightings, §8 Bookmarks, §9 Profiles, §10 Events and RSVPs) but does not define a body-format declaration or any image / video / audio support. This note describes a proposed shape for a later release — markdown as a recognized body format, images and other media as first-class signed `kind=media` posts, embedded into prose via markdown links to a `swamp:` URI — and identifies the small set of additions the current spec already carries to keep that later release additive rather than breaking. Examples below use `Swamp-Version: 0.X.0` as a placeholder for whichever release lands these features.*
+*Forward-looking application note. The current Swamp spec defines text bodies (SPEC §4 Post format) and a small set of post kinds (SPEC §7 Sightings, §8 Profiles, §9 Following) but does not define a body-format declaration or any image / video / audio support. This note describes a proposed shape for a later release — markdown as a recognized body format, images and other media as first-class signed `kind=media` posts, embedded into prose via markdown links to a `swamp:` URI — and identifies the small set of additions the current spec already carries to keep that later release additive rather than breaking. Examples below use `Swamp-Version: 0.X.0` as a placeholder for whichever release lands these features.*
 
 ---
 
@@ -23,8 +23,8 @@ The current spec deliberately keeps bodies simple:
 
 - Bodies are UTF-8 text (SPEC §4.6 Signature).
 - SPEC §4.2 Not email forbids `MIME-Version:` and any `multipart/*` Content-Type. Posts are not email and are not MIME containers.
-- Bookmark bodies (SPEC §8.4 Body) explicitly note "no markdown semantics imposed." A body containing `**bold**` is just text containing those characters; rendering is a reader-side choice with no spec backing.
-- `Content-Type:` carries `application/swamp; kind={post|sighting|bookmark|profile|event|rsvp}; v=0.3.0`. There is no kind for media.
+- Bookmark bodies (bookmarks extension) explicitly note "no markdown semantics imposed." A body containing `**bold**` is just text containing those characters; rendering is a reader-side choice with no spec backing.
+- `Content-Type:` carries `application/swamp; kind={post|sighting|profile|following}; v=0.6.0`. There is no kind for media.
 
 This is fine for the current scope. It is not enough for the moment an author wants to share a photograph of a frog with a caption.
 
@@ -108,7 +108,7 @@ Three small additions already in the current spec keep a later release cleanly a
 
 ### 1. The `swamp:` URI scheme
 
-`swamp:<DID>/<CID>` is defined as a URI scheme in the current spec, even though the current spec has no markdown rendering and no media. The scheme generalizes post-refs and lets current implementations recognize the form wherever it appears — most usefully in `Bookmark-Of:` values pointing at Swamp posts, which SPEC §8 Bookmarks currently treats as external HTTP URLs only.
+`swamp:<DID>/<CID>` is defined as a URI scheme in the current spec, even though the current spec has no markdown rendering and no media. The scheme generalizes post-refs and lets current implementations recognize the form wherever it appears — most usefully in `Bookmark-Of:` values pointing at Swamp posts, which the bookmarks extension treats as external HTTP URLs only.
 
 ### 2. `Body-Format:` header
 
@@ -194,7 +194,7 @@ Inline base64 in the body would put binary content inside the email-header-shape
 
 ### Why a separate `kind=media` post rather than media headers on `kind=post`
 
-Two reasons. First, **reactability:** a media post is a first-class artifact in the sighting graph. Others can sight your image with `positive` independently of sighting your prose around it — the same argument that makes bookmarks distinct from prose posts (SPEC §8.1 Why bookmarks are a distinct kind). Second, **reuse:** the same media post can be referenced from many prose posts. If media headers lived on prose posts, the same image would be re-uploaded and re-signed for every reuse.
+Two reasons. First, **reactability:** a media post is a first-class artifact in the sighting graph. Others can sight your image with `positive` independently of sighting your prose around it — the same argument that makes bookmarks distinct from prose posts (see the bookmarks extension's rationale). Second, **reuse:** the same media post can be referenced from many prose posts. If media headers lived on prose posts, the same image would be re-uploaded and re-signed for every reuse.
 
 ### Why broadening `References:` rather than new `Includes:` / `Embeds:`
 
@@ -214,7 +214,7 @@ The cost is real: thread-reconstruction agents that previously could trust every
 - **Streaming media** (HLS, DASH, fragmented MP4 with manifests). Out of scope. Swamp's threat and storage model is whole-object content addressing; manifest-driven streaming wants a different storage model.
 - **DRM, paywalls, access-controlled media.** Out of scope by SPEC §15 Out of scope.
 - **Caption tracks for video** (WebVTT, SRT). Possibly a future application note. The natural shape is a sibling `kind=media` post with `Media-Type: text/vtt` referenced from the video post via `References:`.
-- **Multi-image gallery posts.** Same shape as multi-link bookmarks (SPEC §8.2 One link per bookmark): a sighting groups N media posts with a prose preamble, rather than a single envelope carrying multiple media payloads.
+- **Multi-image gallery posts.** Same shape as multi-link bookmarks (the bookmarks extension's one-link rule): a sighting groups N media posts with a prose preamble, rather than a single envelope carrying multiple media payloads.
 
 ---
 

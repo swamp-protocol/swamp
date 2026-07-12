@@ -113,4 +113,4 @@ None of these is urgent. All of them are cheaper if the identity layer is shared
 
 ---
 
-*Related-work note accompanying the Swamp v0.3.0 specification.*
+*Related-work note accompanying the Swamp v0.6.0 specification.*

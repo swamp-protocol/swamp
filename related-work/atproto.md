@@ -44,4 +44,4 @@ An identity can plausibly hold both an AT Protocol account and a Swamp DID. A pr
 
 ---
 
-*Related-work note accompanying the Swamp v0.3.0 specification.*
+*Related-work note accompanying the Swamp v0.6.0 specification.*

@@ -38,4 +38,4 @@ Both formats serve the same purpose: a reader tool polls a URL periodically, fet
 
 ---
 
-*Related-work note accompanying the Swamp v0.3.0 specification.*
+*Related-work note accompanying the Swamp v0.6.0 specification.*

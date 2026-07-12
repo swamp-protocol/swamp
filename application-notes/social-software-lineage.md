@@ -58,4 +58,4 @@ Swamp is not new. The shape was rehearsed for a decade by the people named here,
 
 ---
 
-*Application note accompanying the Swamp v0.3.0 specification. If a name belongs in this lineage and is missing, please open an issue.*
+*Application note accompanying the Swamp v0.6.0 specification. If a name belongs in this lineage and is missing, please open an issue.*

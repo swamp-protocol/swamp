@@ -2,6 +2,8 @@
 
 Swamp is an open specification. Changes happen in the open, get discussed before they land, and are attributable in git history.
 
+Issues and pull requests here are the mechanics for landing changes. The canonical venue for discourse *about* Swamp is Swamp itself — see `GOVERNANCE.md`, "Where Swamp is discussed."
+
 ## Before proposing a change
 
 Read `SPEC.md`, `MANIFESTO.md`, and the relevant `application-notes/` or `related-work/` files first. A lot of what looks like an obvious place for improvement turns out, on closer reading, to have been deliberately chosen to be the way it is — the design has accumulated reasoning that is not always inline.
@@ -39,6 +41,10 @@ Non-normative notes about how to *apply* the spec in practice. New application n
 
 If there's a system, protocol, or spec Swamp draws from or diverges from in a way that would benefit readers to understand, a related-work note is welcome. Same loose acceptance bar as application notes. Each note should follow the shape outlined in `related-work/README.md`: what it is, how Swamp relates, references.
 
+### Extensions (not spec changes at all)
+
+If your proposal adds new headers, kinds, or body grammars for a domain the core doesn't cover — rooms, commerce, whatever comes next — consider whether it should be an **extension** rather than a core change. Extensions live in their own repositories, version independently, and need no permission from anyone (SPEC §10; `application-notes/extensions-and-negotiation.md` has the decision guide). The core spec stays thin on purpose; "publish it as an extension" is a first-class outcome of a proposal discussion, not a rejection.
+
 ### Governance changes (`GOVERNANCE.md`)
 
 Changes to how Swamp is stewarded. These require steward approval and should be preceded by discussion. Not every proposed governance change will be accepted; specs with bloated governance docs tend to die of process.
@@ -59,7 +65,9 @@ Stewards ultimately pick the name. A proposal's quality matters more than its ti
 When editing `SPEC.md`:
 
 - **Preserve section numbers** unless you're adding a new section or renumbering is explicitly part of the PR's scope.
-- **If you do renumber**, grep the whole repository for `§N` references after and eyeball every one. Cross-reference drift is the most common source of subtle spec errors.
+- **Section numbers freeze at 1.0, RFC-style.** Pre-1.0, renumbering is legal churn — this is where it happens. From 1.0 on, sections keep their numbers permanently; later additions append new numbers or extend with sub-numbers rather than renumbering. (See `RELEASES.md`.)
+- **Cite sections by number *and* title** — `§10 Extensions`, never bare `§10`. Titles are the durable key across pre-1.0 renumberings; bare numbers are the references that break silently.
+- **If you do renumber**, grep the whole repository for `§N` references after and eyeball every one. Cross-reference drift is the most common source of subtle spec errors; title-anchored citations are what make the sweep mechanical.
 - **Match prevailing style**: sentence-case headings, no hard line wrap, relative links within the repo, full URLs for external links.
 - **No emoji.**
 - **Keep the voice** — restrained, precise, confident-but-humble. Swamp is a working draft made good, not a triumphal announcement.

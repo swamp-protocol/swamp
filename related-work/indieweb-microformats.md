@@ -12,11 +12,11 @@
 
 ## How Swamp relates
 
-**Borrowed: the post-kinds vocabulary.** Swamp's `kind=bookmark`, `kind=event`, `kind=rsvp`, and `kind=profile` are direct reflections of IndieWeb practice. The **`Bookmark-Of:`** header is named in obvious homage to h-entry's `bookmark-of`. The RSVP response set (`yes | no | maybe | interested`) is the IndieWeb set verbatim.
+**Borrowed: the post-kinds vocabulary.** Swamp's `kind=profile` (core) and the bookmarks and events extensions' `kind=bookmark`, `kind=event`, and `kind=rsvp` are direct reflections of IndieWeb practice. The **`Bookmark-Of:`** header is named in obvious homage to h-entry's `bookmark-of`. The RSVP response set (`yes | no | maybe | interested`) is the IndieWeb set verbatim.
 
 **Borrowed: the "post, don't application" posture.** IndieWeb encourages thinking of your output as posts on your site, which might also notify other sites, which might also render elsewhere — not as content inside an application. Swamp takes this further: a post is a signed, freestanding artifact that travels on its own and can be rendered by anything that can parse an envelope and a body.
 
-**Borrowed: the "title as author record" pattern.** IndieWeb bookmarks commonly embed the bookmarked page's title as observed by the author — a small act of archival that guards against link rot and drive-by retitling. Swamp's optional `Title:` on bookmark posts (SPEC §8.3 Headers) serves the same purpose.
+**Borrowed: the "title as author record" pattern.** IndieWeb bookmarks commonly embed the bookmarked page's title as observed by the author — a small act of archival that guards against link rot and drive-by retitling. Swamp's optional `Title:` on bookmark posts (bookmarks extension) serves the same purpose.
 
 **Borrowed: implicit acceptance of link rot.** Swamp and IndieWeb both take the position that the open web rots, and neither pretends otherwise. A bookmark is a vouch at a moment in time. If the link dies, the vouch survives.
 
@@ -41,4 +41,4 @@ An IndieWeb-style "display my posts on my own domain" pattern composes naturally
 
 ---
 
-*Related-work note accompanying the Swamp v0.3.0 specification.*
+*Related-work note accompanying the Swamp v0.6.0 specification.*

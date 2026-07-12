@@ -119,7 +119,7 @@ A few examples, concrete:
 
 - **A living "what I'm up to right now" page** that automatically reflects what you've actually been posting about, without you having to remember to update it.
 - **A long-term blog** where each post is signed and can be cited long after any particular website goes offline.
-- **Notes on what you've been reading** — small signed bookmarks with short commentary — that your friends (and their agents) can pick up.
+- **Notes on what you've been reading** — short signed notes pointing at links, with a line of commentary — that your friends (and their agents) can pick up.
 - **Gatherings** — announcing a meetup with an event post, and collecting RSVPs as signed responses.
 - **A way for your AI agent to do public work on your behalf** — surfacing interesting things it read, with clear labels showing it was the agent, not you, doing the surfacing.
 

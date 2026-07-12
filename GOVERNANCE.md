@@ -1,6 +1,6 @@
 # Governance
 
-*How Swamp is stewarded. Deliberately short.*
+*How core Swamp — this specification — is stewarded. Deliberately short. Extensions are not governed here, or anywhere: each extension is governed by whoever publishes it (SPEC §10), and there is no overall governance of the extension space, by design.*
 
 ---
 
@@ -40,6 +40,11 @@ Stewards steward **the specification** — the bytes on the wire, the envelope, 
 - What readers trust. Trust is per-reader (see SPEC §11 Trust (non-protocol)).
 - How forks evolve. Once a fork declares its own `Swamp-Version:` locator, it is its own spec.
 - Implementations of Swamp tooling. Reference implementations may live in separate repositories, each with their own maintainers.
+- Extensions. An extension is governed by whoever publishes it (SPEC §10). Competing extensions are welcome; adoption arbitrates.
+
+## Where Swamp is discussed
+
+Discussions about Swamp will happen in many mediums — issues and pull requests, email, other networks — and that's as it should be. But **the canonical place to talk about Swamp is on Swamp.** When a conversation matters, bring it home: post it, sight it, let it become part of the record. GitHub issues and pull requests remain the mechanics for landing spec changes (see `CONTRIBUTING.md`); the discourse of record lives on the medium itself.
 
 ## Why this is short
 

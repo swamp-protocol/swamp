@@ -36,4 +36,4 @@ In practice, WebFinger is best known as the resolution layer for **Mastodon and 
 
 ---
 
-*Related-work note accompanying the Swamp v0.3.0 specification.*
+*Related-work note accompanying the Swamp v0.6.0 specification.*

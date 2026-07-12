@@ -46,7 +46,7 @@ Self-sightings are not artifacts. They are properties of entries inside a sighti
 
 A sighting is a single signed post:
 
-- `Content-Type: application/swamp; kind=sighting; v=0.3.0`
+- `Content-Type: application/swamp; kind=sighting; v=0.6.0`
 - Body lists `(why, post-ref)` entries
 - Has its own `Message-ID`, signature, and `Date:`
 - Lives in IPFS like any other Swamp post — addressable by CID

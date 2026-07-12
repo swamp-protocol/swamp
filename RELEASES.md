@@ -6,9 +6,27 @@
 
 ## Release history
 
-### v0.4.0 — 2026-05-07
+### v0.6.0 — in preparation
 
-Pre-release. Discovery release: re-introduces `Feed:` and adds `Following:`.
+Pre-release. The first release since v0.3.0. The wire format continues from the v0.4.0 baseline (below) — everything relative to v0.3.0 remains additive — and adds the extension mechanism:
+
+- **Extensions (SPEC §10).** Core Swamp now defines how vocabulary grows outside the core. Extensions are published specs in their own repositories, versioned independently, declaring which core version they extend; there is no registry, no approval step, and no reserved names — competing extensions are welcome and adoption arbitrates.
+- **The must-carry invariant (SPEC §10.1).** The longstanding unknown-header behavior is promoted to a named, standing promise: unknown headers are preserved, posts of unknown kinds still verify at the envelope level, and every future version of core Swamp keeps this. The one stability promise made during 0.x.
+- **`ext=` Content-Type parameter (SPEC §10.2).** Extension-defined kinds carry `ext=<token>/<version>` alongside `v=` — `v=` names the envelope contract, `ext=` the body contract. Readers ignore `Content-Type:` parameters they do not recognize.
+- **`Extension:` header (SPEC §10.2).** Optional, repeatable; pairs an extension token with scheme-tagged locators for its spec, mirroring the `Swamp-Version:` locator grammar. Posts using an extension SHOULD declare it; profile posts MAY advertise the extensions their author speaks.
+- **Composition rules (SPEC §10.3).** Headers compose freely; the body has exactly one owner.
+- **Core got smaller.** Bookmarks and events / RSVPs leave the core: both would plainly be extensions if proposed today, so they become extensions now rather than shipping in core only to be moved later. They continue as the planned `swamp-bookmarks` and `swamp-events` extensions, their spec text carried over from the former core §8 and §10. The must-carry invariant is what makes this safe: a v0.6.0 reader treats an existing `kind=bookmark` / `kind=event` / `kind=rsvp` post as an unknown kind — still verified, still carried.
+- **Documentation coherence sweep.** Satellite documents (application notes, related-work notes, guides) had drifted to v0.3-era section numbering and version strings; all are aligned to v0.6.0.
+
+Why the number jumps from v0.3.0 to v0.6.0: v0.4.0 and v0.5.0 were consumed internally (below) and the v0.5.0 designation appeared in public previews; reusing either number would have made the public timeline ambiguous. Version numbers only move forward.
+
+### v0.5.0 — design preview; never released
+
+Explored replacing `did:key` with Blockchain Commons' XID as the identity primitive (a clean break) and adding Tier-1 open rooms to the core. Both were concluded to belong outside mainline: XID remains a later-release candidate on its own merits (see [`ROADMAP.md`](ROADMAP.md)) and should arrive additively rather than as a break, and rooms continues as a planned extension (`swamp-rooms`) — the extension mechanism v0.6.0 ships is in part what this preview taught. The preview is preserved in the project's design archive; it does not live on a branch. No conformant tooling ever emitted `Swamp-Version: 0.5.0`.
+
+### v0.4.0 — internal baseline; never released
+
+Drafted 2026-05, never tagged for release; its changes ship publicly as part of v0.6.0. Discovery work: re-introduces `Feed:` and adds `Following:`.
 
 - **`Feed:` header re-introduced**, redefined as locator-to-signed-CID-claim. The header carries a URL; a polite client GETs the URL and receives a signed Swamp envelope (`Content-Type: application/swamp; kind=feed-claim; v=0.4.0`) whose `Latest:` field names the author's most recent self-sighting CID and whose signature attests under the same key that signs the author's posts. URL-only locator for v0.4.0; DNS TXT and other forms reserved for later. Mutability lives at exactly one bounded point — the URL response — and nowhere else in the stack. The earlier v0.2 `Feed:` semantics (alternate transport for post bytes) are not revived; the new shape is locator only. SPEC §4.10 carries the full contract.
 - **`Following:` post kind added.** A signed blogroll-shaped artifact: each line of the body is `<DID> <whitespace> <Feed-URL>`, naming a feed the author is following at the time of publication. Body grammar parallels sightings (line-oriented, no prose mixed in); commentary, if any, lives in a sibling `kind=post`. Distinguished by `Content-Type: application/swamp; kind=following; v=0.4.0`. Snapshot semantics (latest by author is the live view; no `Supersedes:` chain). SPEC §11.
@@ -60,6 +78,8 @@ The semver discipline for protocol changes:
 - **MAJOR** (e.g., 0.x → 1.0) — for the 0.x → 1.0 transition, the commitment to backwards-compatibility going forward. After 1.0, MAJOR bumps mean breaking changes; expect long discussion and strong justification.
 
 **While Swamp is in 0.x pre-release, MINOR bumps may include changes that would be breaking at 1.0.** The spec is a working draft. Per [semver.org](https://semver.org), "anything MAY change at any time" during 0.x; that's the contract Swamp is operating under until the first 1.0 release.
+
+**Section numbers follow the same discipline.** Pre-1.0, SPEC.md sections may be renumbered as sections are added or removed. At 1.0 they freeze, RFC-style: a section keeps its number permanently, and later additions append new numbers or extend with sub-numbers rather than renumbering. Cite sections by number *and* title (`§10 Extensions`) — titles are the durable key across pre-1.0 renumberings.
 
 ## Release naming scheme
 

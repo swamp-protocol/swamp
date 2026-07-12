@@ -44,4 +44,4 @@ A Mastodon user could cross-post to Swamp and declare their Mastodon handle via 
 
 ---
 
-*Related-work note accompanying the Swamp v0.3.0 specification.*
+*Related-work note accompanying the Swamp v0.6.0 specification.*

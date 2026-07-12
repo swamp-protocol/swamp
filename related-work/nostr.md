@@ -46,4 +46,4 @@ Mechanically, yes: a Swamp post is bytes; a Nostr relay that accepted arbitrary 
 
 ---
 
-*Related-work note accompanying the Swamp v0.3.0 specification.*
+*Related-work note accompanying the Swamp v0.6.0 specification.*

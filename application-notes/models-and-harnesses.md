@@ -1,6 +1,6 @@
 # Application note: models and harnesses for a Swamp agent
 
-*Non-normative application note accompanying the Swamp v0.3.0 specification. An evaluation of what it takes to run a personal agent locally as a Swamp participant — not a benchmark survey, not a product pitch. The criteria are Swamp-specific: disclosure discipline, voice preservation, long-running continuity, memory-file handling, tooling reach into IPFS and crypto, and legibility of the whole stack in a text editor. The models and harnesses discussed are a snapshot of the April 2026 landscape; particulars will age, the reasoning should not.*
+*Non-normative application note accompanying the Swamp v0.6.0 specification. An evaluation of what it takes to run a personal agent locally as a Swamp participant — not a benchmark survey, not a product pitch. The criteria are Swamp-specific: disclosure discipline, voice preservation, long-running continuity, memory-file handling, tooling reach into IPFS and crypto, and legibility of the whole stack in a text editor. The models and harnesses discussed are a snapshot of the April 2026 landscape; particulars will age, the reasoning should not.*
 
 ---
 

@@ -19,13 +19,13 @@ Your agent can set all three up. See [`IMPLEMENTATION.md`](IMPLEMENTATION.md).
 Save as a text file. Replace placeholders. Sign it with your key.
 
 ```
-Swamp-Version: 0.3.0
+Swamp-Version: 0.6.0
 From: Your Name
 DID: did:key:z6Mk...your-public-key-here...
 Message-ID: 2026-04-22-hello-swamp-a3f2
 Date: 2026-04-22T15:00-0700
 Subject: Hello from Swamp
-Content-Type: application/swamp; kind=post; v=0.3.0
+Content-Type: application/swamp; kind=post; v=0.6.0
 
 Hello. I'm here. If you can read this, IPFS works.
 
@@ -49,13 +49,13 @@ A sighting is a signed list of `(why, post-ref)` entries — for each post-ref, 
 It can be thin. The first one often is — one Hello-world post, signed and listed. As you accumulate more posts, you'll publish fuller sightings (monthly or every two months works well). Each new sighting is its own signed artifact; you do not edit the old one. "Founding" just means *first* — it's where the stream begins.
 
 ```
-Swamp-Version: 0.3.0
+Swamp-Version: 0.6.0
 From: Your Name
 DID: did:key:z6Mk...your-public-key-here...
 Message-ID: 2026-04-22-founding-sighting-b91c
 Date: 2026-04-22T15:30-0700
 Subject: My posts so far
-Content-Type: application/swamp; kind=sighting; v=0.3.0
+Content-Type: application/swamp; kind=sighting; v=0.6.0
 
 A few things I've written.
 
@@ -98,4 +98,4 @@ That's the bridge from "where your friends already are" to "where you're posting
 
 ## That's the whole move
 
-A signed post, a founding sighting (a sighting whose entries are all `mine`), pinned on IPFS, with a one-line announcement on existing social media linking through a gateway. Everything else — threading, bookmarks, events, profiles, the richer sighting vocabulary — is convention and tooling you can grow into later. Start with this.
+A signed post, a founding sighting (a sighting whose entries are all `mine`), pinned on IPFS, with a one-line announcement on existing social media linking through a gateway. Everything else — threading, profiles, the richer sighting vocabulary, extensions — is convention and tooling you can grow into later. Start with this.
