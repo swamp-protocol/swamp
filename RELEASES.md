@@ -6,7 +6,7 @@
 
 ## Release history
 
-### v0.6.0 — in preparation
+### v0.6.0 — 2026-07-11
 
 Pre-release. The first release since v0.3.0. The wire format continues from the v0.4.0 baseline (below) — everything relative to v0.3.0 remains additive — and adds the extension mechanism:
 
