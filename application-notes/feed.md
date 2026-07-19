@@ -1,6 +1,6 @@
 # Application note: Feed: header and the signed CID claim
 
-*Non-normative application note accompanying the Swamp v0.6.0 specification. SPEC §4.10 Feed defines the normative contract for the `Feed:` header and the signed claim returned at its URL. This note walks through what the contract looks like in practice, common edge cases, and recommendations for authors and tooling.*
+*Non-normative application note accompanying the Swamp v0.7.0 specification. SPEC §4.10 Feed defines the normative contract for the `Feed:` header and the signed claim returned at its URL. This note walks through what the contract looks like in practice, common edge cases, and recommendations for authors and tooling.*
 
 ---
 
@@ -15,13 +15,14 @@ A reader encountering one of an author's posts on a non-Swamp surface — Bluesk
 A first-time publisher has just posted their founding self-sighting at `bafybei...self001`. Their `Feed:` URL serves:
 
 ```
-Swamp-Version: 0.6.0
+Swamp-Version: 0.7.0
 From: Alice
 DID: did:key:z6Mk...
 Date: 2026-05-05T08:00-0700
 Latest: bafybei...self001
+Feed: https://alice.example.com/swamp/latest
 Message-ID: 2026-05-05-08-00-feed-claim-001
-Content-Type: application/swamp; kind=feed-claim; v=0.6.0
+Content-Type: application/swamp; kind=feed-claim; v=0.7.0
 
 -----BEGIN SIGNATURE-----
 (base64 signature bytes)
@@ -31,14 +32,15 @@ Content-Type: application/swamp; kind=feed-claim; v=0.6.0
 A few weeks later, after several more self-sightings, the URL serves:
 
 ```
-Swamp-Version: 0.6.0
+Swamp-Version: 0.7.0
 From: Alice
 DID: did:key:z6Mk...
 Date: 2026-05-22T14:00-0700
 Latest: bafybei...self042
 Prev: bafybei...self041
+Feed: https://alice.example.com/swamp/latest
 Message-ID: 2026-05-22-14-00-feed-claim
-Content-Type: application/swamp; kind=feed-claim; v=0.6.0
+Content-Type: application/swamp; kind=feed-claim; v=0.7.0
 
 -----BEGIN SIGNATURE-----
 (base64 signature bytes)
@@ -107,6 +109,6 @@ For implementations of Swamp readers, agents, or aggregators:
 
 ## Forward-compatibility notes
 
-v0.6.0 specifies URL-only `Feed:` locators. A later release may add DNS TXT (`Feed: _swamp.alice.example.com`, resolved via DNS) for cases where website uptime is a problem. The header name stays `Feed:`; the value's syntax extends.
+v0.7.0 specifies URL-only `Feed:` locators. A later release may add DNS TXT (`Feed: _swamp.alice.example.com`, resolved via DNS) for cases where website uptime is a problem. The header name stays `Feed:`; the value's syntax extends.
 
 The `prev` chain in feed-claims could be extended with multi-step hop hints in a future release, but the current `References:` chain on each self-sighting already provides arbitrary walk-back. `Prev:` exists specifically to avoid one fetch in the common case; deeper hints earn their keep only if missed-poll-recovery becomes a hot path.

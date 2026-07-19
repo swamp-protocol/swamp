@@ -131,4 +131,4 @@ Two recorded conversations on the SnapStack design wiki cover material that did 
 
 ---
 
-*Related-work note accompanying the Swamp v0.6.0 specification.*
+*Related-work note accompanying the Swamp v0.7.0 specification.*

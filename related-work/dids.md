@@ -16,7 +16,7 @@ A DID Document is the resolved form — a JSON-LD structure containing verificat
 
 **`did:web`.** A DID backed by an HTTPS endpoint. `did:web:example.com` resolves by fetching `https://example.com/.well-known/did.json`. Richer than `did:key` (supports key rotation without changing the DID) but depends on DNS and HTTPS — a centralization most Swamp participants will consider acceptable for authorship but not for posts that need maximal durability.
 
-**`did:plc`.** The Personal Ledger Consortium method used by the AT Protocol. Requires a lookup against the PLC directory service. Not in scope for Swamp's v0.6.0 baseline but compatible with Swamp's `DID:` header — a reader that can resolve `did:plc:` entries can participate.
+**`did:plc`.** The Personal Ledger Consortium method used by the AT Protocol. Requires a lookup against the PLC directory service. Not in scope for Swamp's v0.7.0 baseline but compatible with Swamp's `DID:` header — a reader that can resolve `did:plc:` entries can participate.
 
 ## How Swamp relates
 
@@ -24,7 +24,7 @@ A DID Document is the resolved form — a JSON-LD structure containing verificat
 
 **Borrowed: method-agnosticism.** The spec does not commit to a single method. Any DID method is permitted in `DID:`; readers that cannot resolve a given method treat those posts the same way they would treat an unreachable transport — verifiable by anyone who can resolve, opaque to those who cannot.
 
-**Baseline: `did:key`.** Swamp v0.6.0 names `did:key` as the guaranteed-supported baseline. A new participant can generate a DID locally, with no registrar and no network dependencies, and begin posting.
+**Baseline: `did:key`.** Swamp v0.7.0 names `did:key` as the guaranteed-supported baseline. A new participant can generate a DID locally, with no registrar and no network dependencies, and begin posting.
 
 **Tension: richer methods.** Some DID methods (and the closely-related Blockchain Commons XID work — see `related-work/hubert.md`) offer much richer identity semantics: key rotation without identity change, delegation, permissions, stable identifiers across key lifecycle. Swamp's current approach — an ad hoc key-rotation announcement post signed by the old key — is the minimum-viable pattern. Future versions will likely adopt richer machinery; SPEC §17 Open questions flags this as an open question.
 
@@ -37,4 +37,4 @@ A DID Document is the resolved form — a JSON-LD structure containing verificat
 
 ---
 
-*Related-work note accompanying the Swamp v0.6.0 specification.*
+*Related-work note accompanying the Swamp v0.7.0 specification.*

@@ -25,7 +25,7 @@ Core properties relevant to Swamp:
 
 **Departed: IPNS for identity or authorship.** IPNS (InterPlanetary Name System) provides mutable pointers on top of IPFS — a stable name that can be updated to point at new CIDs. Swamp deliberately does not use IPNS for identity or post identity. Post identity is the `(DID, Message-ID)` tuple carried inside the signed post, not a mutable pointer to it. SnapStack's extensive hands-on experience with IPNS (see `snapstack.md`) informed this choice: IPNS is operationally painful, requires active republishing, and depends on DNSLink or ENS backing to be reliable — all of which defeat the decentralization story.
 
-(The `ipns:` locator defined in SPEC §4.1.1 Value grammar is a separate, narrower use: it names a *spec* version — "whatever the maintainers are calling v0.6 today" — where the operational costs of republishing are borne by a small group of stewards rather than by every author, and a reader can always fall back to the `ipfs:` locator for a byte-exact pin. The caution above applies to identity and per-post addressing, not to that one spec-pointer case.)
+(The `ipns:` locator defined in SPEC §4.1.1 Value grammar is a separate, narrower use: it names a *spec* version — "whatever the maintainers are calling v0.7 today" — where the operational costs of republishing are borne by a small group of stewards rather than by every author, and a reader can always fall back to the `ipfs:` locator for a byte-exact pin. The caution above applies to identity and per-post addressing, not to that one spec-pointer case.)
 
 **Gateways are convenience, not substrate.** Readers routinely reach IPFS content through public gateways (`ipfs.io`, `dweb.link`, Cloudflare's gateway). A gateway URL is a clickable pointer for humans clicking links from social media, but the canonical home of a Swamp post is its CID on IPFS, and gateway URLs are pointers at that.
 
@@ -39,4 +39,4 @@ Core properties relevant to Swamp:
 
 ---
 
-*Related-work note accompanying the Swamp v0.6.0 specification.*
+*Related-work note accompanying the Swamp v0.7.0 specification.*

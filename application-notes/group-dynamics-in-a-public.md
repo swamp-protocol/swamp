@@ -100,4 +100,4 @@ dynamics legible without giving the protocol any way to suppress them.
 
 ---
 
-*Application note accompanying the Swamp v0.6.0 specification.*
+*Application note accompanying the Swamp v0.7.0 specification.*

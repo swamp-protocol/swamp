@@ -41,4 +41,4 @@ An IndieWeb-style "display my posts on my own domain" pattern composes naturally
 
 ---
 
-*Related-work note accompanying the Swamp v0.6.0 specification.*
+*Related-work note accompanying the Swamp v0.7.0 specification.*

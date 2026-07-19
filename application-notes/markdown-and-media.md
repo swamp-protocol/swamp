@@ -1,5 +1,7 @@
 # Application note: Markdown bodies and embedded media
 
+*Superseded 2026-07 by SPEC §4.9, which lands markdown bodies and image embedding in core (v0.7.0) in a lighter shape than proposed here — bare-CID embeds with no `kind=media` envelope. This note is preserved as design history; its `kind=media` design remains available to a future extension if standalone, individually attributed media artifacts earn their keep in practice. Version strings below are frozen at the v0.6 era this note was written in.*
+
 *Forward-looking application note. The current Swamp spec defines text bodies (SPEC §4 Post format) and a small set of post kinds (SPEC §7 Sightings, §8 Profiles, §9 Following) but does not define a body-format declaration or any image / video / audio support. This note describes a proposed shape for a later release — markdown as a recognized body format, images and other media as first-class signed `kind=media` posts, embedded into prose via markdown links to a `swamp:` URI — and identifies the small set of additions the current spec already carries to keep that later release additive rather than breaking. Examples below use `Swamp-Version: 0.X.0` as a placeholder for whichever release lands these features.*
 
 ---

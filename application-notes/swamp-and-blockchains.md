@@ -163,4 +163,4 @@ available for participants who want them.
 
 ---
 
-*Application note accompanying the Swamp v0.6.0 specification.*
+*Application note accompanying the Swamp v0.7.0 specification.*

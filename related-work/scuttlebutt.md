@@ -45,4 +45,4 @@ Core design choices:
 
 ---
 
-*Related-work note accompanying the Swamp v0.6.0 specification.*
+*Related-work note accompanying the Swamp v0.7.0 specification.*

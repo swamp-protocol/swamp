@@ -19,13 +19,13 @@ Your agent can set all three up. See [`IMPLEMENTATION.md`](IMPLEMENTATION.md).
 Save as a text file. Replace placeholders. Sign it with your key.
 
 ```
-Swamp-Version: 0.6.0
+Swamp-Version: 0.7.0
 From: Your Name
 DID: did:key:z6Mk...your-public-key-here...
 Message-ID: 2026-04-22-hello-swamp-a3f2
 Date: 2026-04-22T15:00-0700
 Subject: Hello from Swamp
-Content-Type: application/swamp; kind=post; v=0.6.0
+Content-Type: application/swamp; kind=post; v=0.7.0
 
 Hello. I'm here. If you can read this, IPFS works.
 
@@ -39,6 +39,7 @@ Conventions:
 - **Message-ID**: date prefix, topical slug, short random tail. Readable and sortable.
 - **Date**: ISO 8601 with timezone offset.
 - **Signature**: covers bytes from the first character of `From:` through the blank line before the signature block. UTF-8, LF line endings, no trailing whitespace. (SPEC §4.6 Signature.)
+- **Markdown and images**: add `Body-Format: text/markdown` to write CommonMark. Embed an image by publishing its bytes beside the post (a file named by its CID) and writing `![alt text](<the-CID>)` in the body. (SPEC §4.9.)
 
 ---
 
@@ -49,13 +50,13 @@ A sighting is a signed list of `(why, post-ref)` entries — for each post-ref, 
 It can be thin. The first one often is — one Hello-world post, signed and listed. As you accumulate more posts, you'll publish fuller sightings (monthly or every two months works well). Each new sighting is its own signed artifact; you do not edit the old one. "Founding" just means *first* — it's where the stream begins.
 
 ```
-Swamp-Version: 0.6.0
+Swamp-Version: 0.7.0
 From: Your Name
 DID: did:key:z6Mk...your-public-key-here...
 Message-ID: 2026-04-22-founding-sighting-b91c
 Date: 2026-04-22T15:30-0700
 Subject: My posts so far
-Content-Type: application/swamp; kind=sighting; v=0.6.0
+Content-Type: application/swamp; kind=sighting; v=0.7.0
 
 A few things I've written.
 

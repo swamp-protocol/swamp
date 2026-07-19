@@ -49,4 +49,4 @@ The discovery layer that made this work was **RSS readers** (Bloglines, NetNewsW
 
 ---
 
-*Related-work note accompanying the Swamp v0.6.0 specification.*
+*Related-work note accompanying the Swamp v0.7.0 specification.*

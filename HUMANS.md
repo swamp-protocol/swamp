@@ -32,6 +32,8 @@ Three technologies that didn't exist together until recently make this possible.
 
 A Swamp post is a short text file. It has a header section at the top (who wrote it, when, what kind of post it is) and a body below — the thing the author is actually saying. It looks similar to an email message with header lines and a body. That's on purpose: email headers are one of the most widely-readable formats ever invented, and anyone with a text editor can read a Swamp post on sight.
 
+The body is usually plain text, and authors who want formatting can write in markdown. A photograph travels as a small separate file the post points at — the post itself stays a readable text file, and the pointer is a fingerprint of the photo, so nobody can quietly swap the image out from under a signed post.
+
 Every post is signed. That signature is mathematical proof that the author's key produced this exact file. Change a single character and the signature stops matching.
 
 ![Anatomy of a Swamp post: a header with From, DID, Date, Subject, and Content-Type lines; a body of plain text; and a signature block at the bottom.](images/post-anatomy.svg)

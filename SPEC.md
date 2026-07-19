@@ -1,6 +1,6 @@
 # Swamp Protocol Specification
 
-*Version 0.6.0. The normative specification for the Swamp protocol. Companion to the Swamp manifesto, the application notes, and the related-work surveys in this repository.*
+*Version 0.7.0. The normative specification for the Swamp protocol. Companion to the Swamp manifesto, the application notes, and the related-work surveys in this repository.*
 
 ---
 
@@ -56,9 +56,9 @@ Two layers, kept conceptually distinct even though verification uses both:
 
 Verification procedure: take the public key from the `DID:` header, verify the signature against the canonicalized post bytes, reject on failure.
 
-**DID method.** v0.6.0 requires `did:key`. Other DID methods are reserved for future spec versions; a v0.6.0 reader encountering a `DID:` value using any other method MUST reject the post. The earlier "permitted but unsupported" stance (earlier pre-releases) under-specified verifier behavior; this version commits to one method and reserves space for cleanly adding others later.
+**DID method.** v0.7.0 requires `did:key`. Other DID methods are reserved for future spec versions; a v0.7.0 reader encountering a `DID:` value using any other method MUST reject the post. The earlier "permitted but unsupported" stance (earlier pre-releases) under-specified verifier behavior; this version commits to one method and reserves space for cleanly adding others later.
 
-**Fragment syntax in `DID:` values.** The `DID:` header value MAY carry an optional URL fragment naming a specific key within the DID's keyring: `did:key:z6Mk...#z6Mk...`. For `did:key`, a bare DID is equivalent to `<did>#<canonical-multibase-key>` per the W3C `did:key` Method Spec — there is exactly one key, identified canonically by its own multibase form. v0.6.0 readers that don't need the fragment (which, for `did:key`, is none of them) MUST parse and discard it. Reserving the syntax now lets future DID methods with multi-key support use the same `DID:` header without a wire-format break.
+**Fragment syntax in `DID:` values.** The `DID:` header value MAY carry an optional URL fragment naming a specific key within the DID's keyring: `did:key:z6Mk...#z6Mk...`. For `did:key`, a bare DID is equivalent to `<did>#<canonical-multibase-key>` per the W3C `did:key` Method Spec — there is exactly one key, identified canonically by its own multibase form. v0.7.0 readers that don't need the fragment (which, for `did:key`, is none of them) MUST parse and discard it. Reserving the syntax now lets future DID methods with multi-key support use the same `DID:` header without a wire-format break.
 
 ### 3.1 Identity is PKI as substrate, not as trust
 
@@ -84,9 +84,31 @@ I am rotating to a new key. My new DID is did:key:NEW...
 
 Consumers of Swamp update their records; sightings from the new DID carrying historical context ("this is still Alice") help the transition. A lost key is an identity reset; the human re-bootstraps by announcing a fresh key on existing social media.
 
-### 3.3 Looking forward: XID and richer DID methods
+### 3.3 Key custody: identities from words
 
-Swamp v0.6.0 requires `did:key`; other DID methods are reserved for future spec versions. Several richer identity primitives are candidates for first-class support in later releases:
+A Swamp identity is a 32-byte Ed25519 seed, and §3.2 is frank about the stakes: a lost key is an identity reset. Thirty-two random bytes are excellent cryptography and terrible custody — they live in a browser profile, a keystore directory, an encrypted blob, all of which die with a machine, a profile, or one careless uninstall. Core Swamp therefore standardizes the custody path proven by a decade of cryptocurrency wallets: encode the entropy as words ([BIP-39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)), so the backup is twelve words on paper and — because every tool pins the same derivation — the words are portable: write them down in one tool today, type them into another next year, get the same DID.
+
+**Conformance.** How a key was generated is invisible on the wire; no verifier can distinguish a words-born key from a random one, so this section constrains tools, not posts:
+
+- An implementation that **creates** identities MUST offer mnemonic creation and recovery per the derivation below.
+- Given the same words, passphrase, and index, a conforming implementation MUST derive the same DID.
+- Keys from other sources (raw entropy, imported keystores) remain valid identities; mnemonic-born keys are the custody norm, not a wire requirement.
+
+**The derivation.** From words to `did:key`, exactly this pipeline:
+
+1. **Mnemonic:** BIP-39, English wordlist. New identities are minted as 12 words (128-bit entropy). On recovery, tools MUST accept 12, 15, 18, 21, or 24 words and MUST reject a failed checksum — deriving from a mis-copied word would silently mint a stranger.
+2. **Seed:** `PBKDF2-HMAC-SHA512(password = NFKD(mnemonic), salt = "mnemonic" || NFKD(passphrase), 2048 iterations, 64 bytes)`, per BIP-39. The passphrase defaults to empty; tools SHOULD present it as the rare, advanced option it is (it is unrecoverable by design).
+3. **Tree:** [SLIP-0010](https://github.com/satoshilabs/slips/blob/master/slip-0010.md) for Ed25519 — master from `HMAC-SHA512("ed25519 seed", seed)`, hardened-only children.
+4. **Path:** identity *i* lives at **`m/i′`**; the default identity is `m/0′`. There is no BIP-44 ceremony — no coin type, no account/change scaffolding — because none of it buys Swamp anything, and every extra path segment is one more constant two implementations can disagree on.
+5. **Identity:** the 32 bytes at `m/i′` are a standard Ed25519 private-key seed; public-key derivation and `did:key` encoding are exactly as for any other key (§3). Nothing downstream of the seed knows words were involved.
+
+**Custody rules for minting tools.** Words are shown once at minting and MUST NOT be stored by the tool — the paper is the backup; the tool keeps only the derived seed, protected as it would any key. Recovery MUST display the derived DID before saving, so a wrong word, passphrase, or index surfaces as a visible mismatch rather than a silently adopted stranger identity. Minting UIs SHOULD require an affirmative write-it-down step before saving.
+
+**Self-check vectors.** Implementations MUST pass the official [BIP-39 vectors](https://github.com/trezor/python-mnemonic/blob/master/vectors.json) and the SLIP-0010 Ed25519 vectors, and MUST reproduce this composition pin: the 12-word mnemonic `abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about`, empty passphrase, path `m/0′` → **`did:key:z6MkrTgzDs6XmRgSKZZhMLvmPm1obfjazbpZ8so3FzchHJhL`**. (Same words at `m/1′` → `did:key:z6Mkj4WAyvo3EZ6q9E7Zn8sBcpddUGQGvtKfDWRAxvduEXYy`; same words, passphrase `TREZOR`, `m/0′` → `did:key:z6MkkcTTSPfLk5Ary3xcS3pNxX6roAZczJfUAYiBpk61TcN5`.) A tool that reproduces all three has the whole pipeline right.
+
+### 3.4 Looking forward: XID and richer DID methods
+
+Swamp v0.7.0 requires `did:key`; other DID methods are reserved for future spec versions. Several richer identity primitives are candidates for first-class support in later releases:
 
 - **Blockchain Commons' XID** (eXtensible IDentifier) — a stable 32-byte identifier bound to rotatable keys, delegation rules, endpoints, and extensible assertions, with key rotation built in rather than bolted on via ad-hoc announcement posts (§3.2). Strong candidate once `bc-xid-rust` and surrounding tooling stabilize. See `related-work/hubert.md` for the full comparison.
 - **`did:web`** — supports multiple keys per DID, key rotation via DID Document updates, and `service` entries that could carry the `Feed:` locator natively. Promotion from "reserved" to first-class is the natural place for the DID-Document-resolution + `assertionMethod`-purpose-checking work the spec doesn't yet do.
@@ -101,7 +123,7 @@ Posts are plain text, email-header-style, with a body and a trailing signature b
 ### Example
 
 ```
-Swamp-Version: 0.6.0
+Swamp-Version: 0.7.0
 From: Alice
 DID: did:key:z6Mk...
 Message-ID: 2026-04-21-14-40-swamp-first-a3f2
@@ -110,7 +132,7 @@ Subject: My First Swamp Post
 Feed: https://alice.example.com/swamp/latest
 Contact: bsky:alice.example.com
 Contact: email:alice@example.com
-Content-Type: application/swamp; kind=post; v=0.6.0
+Content-Type: application/swamp; kind=post; v=0.7.0
 
 Hello from Swamp. If you can read this, IPFS works.
 
@@ -123,19 +145,19 @@ Hello from Swamp. If you can read this, IPFS works.
 
 | Header | Required | Purpose | Notes |
 |---|---|---|---|
-| `Swamp-Version:` | yes | Spec version for this post | Semantic versioning (`0.6.0`, `1.0.0`, etc.), optionally with scheme-tagged locators. See §4.1. |
+| `Swamp-Version:` | yes | Spec version for this post | Semantic versioning (`0.7.0`, `1.0.0`, etc.), optionally with scheme-tagged locators. See §4.1. |
 | `From:` | yes | Human-readable name claim | Social, unverified by crypto. Anyone can write any name. |
 | `DID:` | yes | Machine-verifiable identity | The identity claim. Used for signature verification. May include optional `#fragment` (§3). |
 | `Message-ID:` | yes | Stable, author-chosen post identity | See §5. |
 | `Date:` | yes | Timestamp with timezone | Author's asserted time of posting. |
 | `Subject:` | no | Headline | Optional but encouraged for human legibility. |
-| `Feed:` | yes | URL returning a signed claim of the author's latest self-sighting CID | URL only (no DNS TXT in v0.6.0). See §4.10. |
+| `Feed:` | yes | URL returning a signed claim of the author's latest self-sighting CID | URL only (no DNS TXT in v0.7.0). See §4.10. |
 | `Contact:` | no | How to reach the author off-Swamp | Optional, repeatable. One value per line. See §4.3. |
 | `Extension:` | no | Declares an extension this post uses, with locators for its spec | Optional, repeatable. One header per extension in use. See §10. |
 | `Content-Language:` | no | BCP 47 language tag(s) of the body | Optional. Comma-separated if multiple. See §4.4. |
 | `Body-Format:` | no | Syntactic format of the body | Optional. Defaults to `text/plain` when absent. See §4.9. |
 | `Form:` | no | Intended form of a prose post | Optional. `note`, `article`, `now` (extensible). See §4.5. |
-| `Content-Type:` | yes | Body format | `application/swamp; kind=post; v=0.6.0` for prose posts; `application/swamp; kind=sighting; v=0.6.0` for sightings; `application/swamp; kind=following; v=0.6.0` for Following: posts (§9). Extension-defined kinds add `ext=` (§10.2). See §4.2 and §7. |
+| `Content-Type:` | yes | Body format | `application/swamp; kind=post; v=0.7.0` for prose posts; `application/swamp; kind=sighting; v=0.7.0` for sightings; `application/swamp; kind=following; v=0.7.0` for Following: posts (§9). Extension-defined kinds add `ext=` (§10.2). See §4.2 and §7. |
 
 Additional headers may appear (`In-Reply-To:`, `References:`, `Supersedes:`, `Sighting-Order:`, etc. — see §6 and §7). Unknown headers are preserved and signed but ignored by readers that don't understand them — the must-carry invariant (§10.1) makes this a standing promise.
 
@@ -160,7 +182,7 @@ Swamp-Version: <semver>
 Swamp-Version: <locator> [<locator> ...]
 ```
 
-Semver is `MAJOR.MINOR.PATCH` (e.g. `0.6.0`), following [semver.org](https://semver.org). The bare form is valid but discouraged in published posts — it identifies *which* spec version without saying *which spec*.
+Semver is `MAJOR.MINOR.PATCH` (e.g. `0.7.0`), following [semver.org](https://semver.org). The bare form is valid but discouraged in published posts — it identifies *which* spec version without saying *which spec*.
 
 The **locator form** is preferred. One or more space-separated scheme-tagged locators, all naming the same spec at different addresses, with a semver suffix. This uses the same scheme-tag pattern as `Contact:` (§4.3), but — unlike `Contact:` — all locators appear on one line, because they are equivalent names for one thing, not a list of separate things.
 
@@ -170,23 +192,23 @@ Each locator is `<scheme>:<identifier>`. The identifiers for currently-defined s
 
 Defined schemes:
 
-- `web:<host>/v<semver>` — canonical human-typeable URL. Example: `web:swamp.talk/v0.6.0`.
+- `web:<host>/v<semver>` — canonical human-typeable URL. Example: `web:swamp.talk/v0.7.0`.
 - `ipfs:<cid>` — content-addressed, immutable. Resolves to a **directory CID** containing the spec (SPEC.md and companion documents). Single-file CIDs pointing at `SPEC.md` directly are also valid. Readers should treat `ipfs:<cid>/SPEC.md` as the canonical entry point within a directory.
 - `ipns:<name>` — content-addressed, mutable pointer. "Whatever the maintainers are calling this version today." Use for tracking clarifying edits within a version without a bump.
-- `git:<host>/<path>@<tag>` — repository-tagged source of truth. Example: `git:github.com/swamp-protocol/swamp@v0.6.0`.
+- `git:<host>/<path>@<tag>` — repository-tagged source of truth. Example: `git:github.com/swamp-protocol/swamp@v0.7.0`.
 
 Readers encountering unknown schemes should preserve them verbatim and fall back to whichever locators they do understand.
 
-**On the `v` prefix.** The bare form follows [semver.org](https://semver.org), which explicitly says versions are not to be preceded with a `v`. The `web:` and `git:` locators carry `v0.6.0` because that is the established convention in the worlds they live in — URL path segments and git tags are overwhelmingly written `/v1/`, `/v0.6.0/`, `v1.0.0`, and readers arriving from those ecosystems will expect the `v`. Each world's convention is kept intact where it lives; the asymmetry is deliberate, not an oversight.
+**On the `v` prefix.** The bare form follows [semver.org](https://semver.org), which explicitly says versions are not to be preceded with a `v`. The `web:` and `git:` locators carry `v0.7.0` because that is the established convention in the worlds they live in — URL path segments and git tags are overwhelmingly written `/v1/`, `/v0.7.0/`, `v1.0.0`, and readers arriving from those ecosystems will expect the `v`. Each world's convention is kept intact where it lives; the asymmetry is deliberate, not an oversight.
 
 Examples:
 
 ```
-Swamp-Version: web:swamp.talk/v0.6.0
-Swamp-Version: ipfs:bafybeiabc...xyz web:swamp.talk/v0.6.0
+Swamp-Version: web:swamp.talk/v0.7.0
+Swamp-Version: ipfs:bafybeiabc...xyz web:swamp.talk/v0.7.0
 Swamp-Version: ipfs:bafybeiabc...xyz
-Swamp-Version: git:github.com/swamp-protocol/swamp@v0.6.0
-Swamp-Version: 0.6.0
+Swamp-Version: git:github.com/swamp-protocol/swamp@v0.7.0
+Swamp-Version: 0.7.0
 ```
 
 #### 4.1.2 Forks
@@ -194,7 +216,7 @@ Swamp-Version: 0.6.0
 The scheme-tagged form accommodates forks cleanly. A fork identifies itself by pointing at its own canonical location:
 
 ```
-Swamp-Version: web:forked-swamp.example.com/v0.6.0
+Swamp-Version: web:forked-swamp.example.com/v0.7.0
 Swamp-Version: ipfs:<fork-directory-cid>
 ```
 
@@ -281,7 +303,7 @@ Content-Language: es, en
 
 A post may carry an optional `Form:` header declaring its intended form. This is a convention within `kind=post` (prose posts); it does not apply to sightings, profiles, `Following:` posts, or other structured kinds, which have their own structural identity.
 
-**Vocabulary (v0.6):**
+**Vocabulary (v0.7):**
 
 - **`note`** — stream-of-consciousness, typically short, no required title, ephemeral. The Swamp analog of a tweet or Mastodon toot.
 - **`article`** — titled, considered, structured long-form. The Swamp analog of a blog post or essay.
@@ -316,7 +338,9 @@ Canonicalization for signing: UTF-8, LF line endings, no trailing whitespace on 
 
 ### 4.7 Signature and content-addressing
 
-The CID of a post is the IPFS hash computed over the *full* post including the signature block. CIDs are how readers fetch and verify post bytes, and are the canonical post-ref everywhere references appear (sighting bodies, threading headers); see §5.
+The CID of a post is computed over the *full* post including the signature block. CIDs are how readers fetch and verify post bytes, and are the canonical post-ref everywhere references appear (sighting bodies, threading headers); see §5.
+
+**CID profile.** The profile is pinned: **CIDv1, `raw` codec, SHA2-256, base32lower** — the flat hash of the post's bytes, the same profile §4.9.2 pins for embedded bytes. One file, one hash; no chunking, no DAG, no implementation-defined parameters between a reader and the check. Tools adding posts to IPFS MUST add them such that this CID is the object's address (raw leaves, no wrapping); posts are small text files, so the large-object caveat of §4.9.2 does not arise. Earlier releases left the profile unstated; in practice all known tooling already computed this profile, so this pin codifies rather than changes. A post-ref recorded under any other profile still resolves to whatever bytes its CID names — the signature check, not the profile, is what makes fetched bytes trustworthy.
 
 ### 4.8 Voice and attribution
 
@@ -357,23 +381,78 @@ Both headers are optional. A post with neither reads as direct authorship by the
 
 A post may carry an optional `Body-Format:` header declaring the syntactic format of its body. Exactly one value, no parameters. The value is a media type identifying how the body should be parsed and rendered.
 
-**v0.6 vocabulary:**
+**v0.7 vocabulary:**
 
 - `text/plain` — plain UTF-8 text, displayed verbatim by renderers.
+- `text/markdown` — CommonMark. See §4.9.1.
 
-The vocabulary is extensible. Future versions may define additional values; readers encountering an unknown `Body-Format:` value should treat the body as `text/plain` and may flag the unrecognized format to the principal.
+The vocabulary is extensible. Future versions and extensions may define additional values; readers encountering an unknown `Body-Format:` value treat the body as `text/plain` and may flag the unrecognized format to the principal. **`text/html` is deliberately not defined and is not a candidate**: it opens an active-content surface (script, embedded objects, link tracking) that Swamp's threat model excludes. Markdown is the ceiling of body richness in core.
 
-**Default.** When `Body-Format:` is absent, the body is `text/plain`. A v0.6 post with no `Body-Format:` header and one that explicitly declares `Body-Format: text/plain` are equivalent.
+**Default.** When `Body-Format:` is absent, the body is `text/plain`. A post with no `Body-Format:` header and one that explicitly declares `Body-Format: text/plain` are equivalent.
 
 **Why a separate header.** `Content-Type:` (§4.2) carries the envelope kind (`application/swamp; kind=...; v=...`). Body format is orthogonal to envelope kind: the same body syntax can apply across post, profile, and extension-defined kinds. Separate headers keep separate concerns separate, parallel to `Content-Language:` (§4.4) being its own header rather than a `Content-Type:` parameter.
 
-**Forward compatibility.** v0.6 defines only `text/plain`. The header is reserved here so future versions can extend the vocabulary (markdown, others) without renaming or relocating the declaration. See [`application-notes/markdown-and-media.md`](application-notes/markdown-and-media.md) for the proposed shape.
+**The envelope stays text.** Nothing in this section puts binary content inside a post. A markdown body is signed, stored, and carried as the same UTF-8 bytes a plain-text body would be — greppable, diffable, auditable in a text editor. Images enter the picture only as content addresses in the body text (§4.9.2); the bytes they name live beside the post, not in it.
 
 **Signed like any header.**
 
+#### 4.9.1 The markdown grammar
+
+A `Body-Format: text/markdown` body is [CommonMark](https://commonmark.org/). Renderers MAY interpret structural syntax — emphasis, headings, lists, block quotes, code spans and fences, links, and images. Rendering is always optional: a terminal reader might show emphasis with terminal attributes and images as their alt text; an agent reads the source; both are conforming. The obligations in §4.9.3 bind only renderers that choose to render.
+
+One restriction is absolute: **raw HTML is never rendered.** CommonMark permits inline and block HTML passthrough; a Swamp renderer MUST treat raw HTML in a body as literal text, not markup. Rendering it would reopen everything the `text/html` exclusion closes.
+
+Renderers MUST gate markdown interpretation on the explicit `Body-Format: text/markdown` declaration. An undeclared body is plain text even if it looks like markdown.
+
+Sighting bodies are excluded: the canonical tabular grammar (§7.3) is its own format and stays plain regardless of any `Body-Format:` header.
+
+#### 4.9.2 Embedding images by content address
+
+A markdown body embeds an image with standard markdown image syntax whose target is a **bare CID**:
+
+```
+![A small green frog mostly underwater on a lily pad](bafkreigdbg7tvyxzwiak4zranznuvruy7l752a7i6r2w2ydw2q7ktisuye)
+```
+
+The target names *bytes*, not a post. §5 settled that post-refs are always `<DID>/<CID>` and naked CIDs are not post-refs; this section gives the naked CID its complementary meaning. The two forms cannot be confused:
+
+| Form | Names | Appears in |
+|---|---|---|
+| `<DID>/<CID>`, `swamp:<DID>/<CID>` | a post | headers, sighting bodies, markdown links (§5.2) |
+| bare `<CID>` | bytes | markdown image targets |
+
+`ipfs://<CID>` is accepted as an equivalent image target for interop with existing tooling; the bare CID is canonical, naming the content without prescribing a transport (§2).
+
+**Integrity is transitive.** The post's signature covers the body; the body carries the CID; the CID commits to the bytes. An embedded image is therefore covered by the author's signature without any additional envelope, and a reader can verify that fetched bytes are the bytes the author embedded, wherever it fetched them from.
+
+**CID profile for embedded bytes:** CIDv1, `raw` codec, SHA2-256, base32lower — the flat hash of the file, the same profile §4.7 pins for posts. Verification is "hash what you fetched, compare." No chunking, no DAG, no parameters between the reader and the check. (Consequence, stated plainly: raw blocks over ~1 MiB transfer poorly over IPFS block exchange. Images meant to circulate should be web-weight; fetching over HTTP from a store has no such limit. Large-media transport is out of scope for v0.7.)
+
+**Publication and resolution.** Authors publish the image bytes the same way they publish posts: as a file named by its CID, beside the post that embeds it. A bare-CID target is thereby **sibling-resolvable** — a reader that fetched the post from any URL resolves the embed against the same base; the same relative resolution works for a local store on disk, any mirror, or an IPFS gateway. Recommended resolution order: local store, then the post's own base URL, then IPFS. The CID check makes every source equally trustworthy. Durability free-rides on existing practice: whoever pins or mirrors a store keeps its images alive with its posts, and pinning tools need not parse a single body to find them. (Store conventions are documented in [`application-notes/stores.md`](application-notes/stores.md).)
+
+**Alt text.** The markdown alt field is the accessibility text — in the language of the post, covered by the post's signature. Authors SHOULD write real alt text; renderers SHOULD present it wherever the image isn't shown (text-mode rendering, fetch declined, fetch failed).
+
+**Non-image media** is not defined in v0.7. A non-image file can be *linked* (`[the recording](bafkrei...)`) and renderers treat it per the unknown-format fallback in §4.9.3; no player rendering, galleries, thumbnails, or streaming are specified.
+
+#### 4.9.3 Renderer conformance
+
+The obligations of this section fall on rendering tools, not on posts. A post carrying markdown is just signed text; renderers are where attack surface opens, so renderers are what the MUSTs bind. A conforming renderer:
+
+1. **MUST render images only in image context** — an `<img>` element or its platform equivalent; never `<object>`, `<embed>`, `<iframe>`, or any context that can execute content.
+2. **MUST verify fetched bytes against the embedded CID**, and MUST NOT render bytes that fail the check. A mismatch is worth surfacing to the principal, not silently dropping.
+3. **MUST determine format by sniffing the fetched bytes' magic numbers** — never by filename or out-of-band claim — **and render only raster image formats, at minimum JPEG, PNG, GIF, and WebP.** Additional raster formats are renderer discretion. **SVG is excluded from rendering** (active-content surface). Unknown or excluded formats fall back to alt text with an affordance to save or open externally.
+4. **MUST NOT render raw HTML** (§4.9.1).
+5. **SHOULD fetch lazily and cap fetch sizes.** An embed is a promise of bytes, not an obligation to download them eagerly.
+6. **SHOULD apply trust-aware fetching:** auto-load images from sources the principal knows; click-to-load from strangers. This is both courtesy and the privacy behavior of §4.9.4.
+
+A non-rendering reader has no obligations. The raw body degrades to legible text with labeled links — the plain-text floor doing its job.
+
+#### 4.9.4 Reader privacy (non-protocol)
+
+On the web, an embedded image is a beacon: an `<img>` pointing at the author's server tells the author who read the post, when, and from where. That does not survive content addressing. A CID names bytes, not a server; the *reader* chooses where to fetch — local cache, own IPFS node, any gateway, any mirror, or nowhere — and the CID check makes every source equally good. No per-author read receipt exists unless the reader volunteers one by fetching from the author's store directly; renderers wanting the stronger property SHOULD prefer non-author sources when available. This falls out of addressing media by content instead of by location, and it is deliberate that core keeps it.
+
 ### 4.10 Feed
 
-Every signed Swamp post carries a `Feed:` header naming a URL where a polite client can reach the author's discovery endpoint. v0.6.0 defines exactly one locator format — a URL — with the URL's response shape specified below. DNS TXT and other locator forms are reserved for future spec versions.
+Every signed Swamp post carries a `Feed:` header naming a URL where a polite client can reach the author's discovery endpoint. v0.7.0 defines exactly one locator format — a URL — with the URL's response shape specified below. DNS TXT and other locator forms are reserved for future spec versions.
 
 **Header grammar:**
 
@@ -383,7 +462,7 @@ Feed: <URL>
 
 Exactly one `Feed:` header per post. The URL is full and absolute (`https://...`).
 
-**What the URL serves.** The `Feed:` URL returns a **signed CID claim** — a tiny Swamp-shaped artifact whose only job is to assert, under the same key that signs the author's posts, the CID of the author's most recent self-sighting (§7.4). The artifact is a Swamp post with `Content-Type: application/swamp; kind=feed-claim; v=0.6.0`, an empty body, and the following headers in addition to the standard envelope:
+**What the URL serves.** The `Feed:` URL returns a **signed CID claim** — a tiny Swamp-shaped artifact whose only job is to assert, under the same key that signs the author's posts, the CID of the author's most recent self-sighting (§7.4). The artifact is a Swamp post with `Content-Type: application/swamp; kind=feed-claim; v=0.7.0`, an empty body, and the following headers in addition to the standard envelope:
 
 - `Latest:` — the CID of the author's latest self-sighting (required).
 - `Prev:` — the CID of the prior latest self-sighting, one back (optional but recommended). Lets a polling client missing multiple intervals detect gaps without fetching the full sighting first.
@@ -393,14 +472,15 @@ The signature covers the canonical envelope per §4.6, exactly as for any post.
 **Example feed-claim envelope:**
 
 ```
-Swamp-Version: 0.6.0
+Swamp-Version: 0.7.0
 From: Alice
 DID: did:key:z6Mk...
 Date: 2026-05-05T14:00-0700
 Latest: bafybeihx7zlvr3p2k4mdqnws6jwkvwd6m5xxkvrpfkn4vt6yjg2jkpvzxa
 Prev: bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi
+Feed: https://alice.example.com/swamp/latest
 Message-ID: 2026-05-05-14-00-feed-claim
-Content-Type: application/swamp; kind=feed-claim; v=0.6.0
+Content-Type: application/swamp; kind=feed-claim; v=0.7.0
 
 -----BEGIN SIGNATURE-----
 (base64 signature bytes)
@@ -474,11 +554,11 @@ swamp:did:key:z6Mk.../bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzd
 swamp:did:key:z6Ab.../bafybeibhx7c4abc7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fjabc
 ```
 
-**v0.6 use.** v0.6.0 does not require any header value or body to use `swamp:` URIs; bare `<DID>/<CID>` post-refs in headers and sighting bodies remain the canonical form. The scheme is defined here so applications and future versions that need a URI form (markdown links, citation tools, browser handlers) have a stable name to use.
+**v0.7 use.** Bare `<DID>/<CID>` post-refs in headers and sighting bodies remain the canonical wire form. The `swamp:` URI is the post-ref's form in URI contexts — most commonly markdown link targets (§4.9.1): `[text](swamp:<DID>/<CID>)` is a post link, which renderers SHOULD present in the medium's own terms (author, subject, kind) rather than as an opaque URI. A body link is a rendering affordance, not a substitute for `In-Reply-To:` or `References:` (§6) — post-to-post relationships that matter at the envelope layer belong in headers.
 
 **Resolution.** Resolving a `swamp:` URI means fetching the bytes addressed by the CID via IPFS (§2). Once fetched, the bytes are verified against the named DID's signature; the post's `Message-ID:` header is then available for human-facing display. The URI is IPFS-bound (it names IPFS-addressable bytes) and identity-aware (it asserts the bytes are signed by the named DID).
 
-**Forward compatibility.** Later releases are expected to use `swamp:` URIs in markdown bodies and in any other contexts where a URI is the natural form. See [`application-notes/markdown-and-media.md`](application-notes/markdown-and-media.md).
+**Forward compatibility.** Later releases may use `swamp:` URIs in additional contexts (citation tools, browser handlers) without changing the grammar.
 
 ## 6. Threading, supersession, retraction
 
@@ -496,7 +576,7 @@ A stronger retraction — "this post should be removed from consideration entire
 
 ## 7. Sightings
 
-A sighting is itself a signed post (same envelope as §4), distinguished by `Content-Type: application/swamp; kind=sighting; v=0.6.0`. The body is a plain-text, line-oriented list of posts the signer has seen, each with an atomic *why* — the reason this post-ref appears in this sighting.
+A sighting is itself a signed post (same envelope as §4), distinguished by `Content-Type: application/swamp; kind=sighting; v=0.7.0`. The body is a plain-text, line-oriented list of posts the signer has seen, each with an atomic *why* — the reason this post-ref appears in this sighting.
 
 ### 7.1 Minimum sighting payload
 
@@ -524,9 +604,9 @@ The absence of a per-entry free-text field is part of this design, not an oversi
 
 **Note on `known` as a why.** `known` is a relationship-shaped reason for inclusion, distinct from the provenance-shaped `mine` and the valence-shaped `positive` / `neutral` / `negative`. The five whys are heterogeneous on purpose: each names a different kind of reason an entry might be listed. If relationship vocabulary accumulates (`colleague`, `family`, `collaborator`, FOAF-style predicates), a future version may split it out; until then, `known` is the single relational why.
 
-### 7.3 Canonical sighting body format (v0.6)
+### 7.3 Canonical sighting body format (v0.7)
 
-The body of a sighting post is plain text, line-oriented. Exactly one canonical format is defined for v0.6; alternate body formats (JSON, YAML, etc.) may be added in future versions under new `Content-Type:` values but are **not supported in v0.6**.
+The body of a sighting post is plain text, line-oriented. Exactly one canonical format is defined for v0.7; alternate body formats (JSON, YAML, etc.) may be added in future versions under new `Content-Type:` values but are **not supported in v0.7**.
 
 **Line grammar:**
 
@@ -580,13 +660,13 @@ A sighting is a natural place for a reader who likes what they're reading to dis
 ### 7.6 Complete sighting example
 
 ```
-Swamp-Version: 0.6.0
+Swamp-Version: 0.7.0
 From: Alice
 DID: did:key:z6Mk...
 Message-ID: 2026-04-21-daily-sighting-a3f2
 Date: 2026-04-21T14:40-0700
 Subject: Sightings for 2026-04-21
-Content-Type: application/swamp; kind=sighting; v=0.6.0
+Content-Type: application/swamp; kind=sighting; v=0.7.0
 Sighting-Order: grouped
 
 This week leaned heavy on agent-framework reading. A few threads worth your
@@ -620,7 +700,7 @@ In raw form the post-refs are opaque CIDs; an agent rendering the sighting for a
 
 ### 7.7 Why one format, and why plain-text tabular
 
-**Why not multiple formats (JSON + YAML + ...) in v0.6:** signature canonicalization must be deterministic. Each additional body format multiplies the canonicalization surface, the parser-divergence risk (YAML in particular has well-known interop hazards), and the implementation matrix. The `Content-Type:` header leaves room to add formats in a later release; v0.6 commits to one.
+**Why not multiple formats (JSON + YAML + ...) in v0.7:** signature canonicalization must be deterministic. Each additional body format multiplies the canonicalization surface, the parser-divergence risk (YAML in particular has well-known interop hazards), and the implementation matrix. The `Content-Type:` header leaves room to add formats in a later release; v0.7 commits to one.
 
 **Why plain-text tabular over JSON:** it matches the email-header-style ethos of posts, scales more readably for long lists (500 sightings is 500 tight lines, not 2000 lines of JSON wrappers), requires no external parser dependency, and puts the most-read field (the why) first where a human eye catches it.
 
@@ -630,7 +710,7 @@ In raw form the post-refs are opaque CIDs; an agent rendering the sighting for a
 
 A **profile** is a signed post that serves as the human-readable "who am I" associated with a DID. Its purpose is pragmatic: a DID is a key, not a person, and readers arriving at a new DID want to know whose chatter they are about to listen to. Profiles supply that context.
 
-Profiles are distinguished by `Content-Type: application/swamp; kind=profile; v=0.6.0`.
+Profiles are distinguished by `Content-Type: application/swamp; kind=profile; v=0.7.0`.
 
 ### 8.1 Headers
 
@@ -675,7 +755,7 @@ Agents introducing a new author to their principal should lead with the profile 
 
 A **`Following:` post** is a signed blogroll-shaped artifact: the author's snapshot of the feeds they're following at the time of publication. It is the directory-of-others companion to the `Feed:` header (§4.10), which is the self-pointer. Together they make the discovery graph self-bootstrapping — from any one root post, a reader can walk outward through `Feed:` claims and `Following:` snapshots without consulting a central registry.
 
-Following: posts are distinguished by `Content-Type: application/swamp; kind=following; v=0.6.0`.
+Following: posts are distinguished by `Content-Type: application/swamp; kind=following; v=0.7.0`.
 
 ### 9.1 Body grammar
 
@@ -737,14 +817,14 @@ Each ring out is one `Feed:` claim and one `Following:` post per author. No cent
 ### 9.5 Complete example
 
 ```
-Swamp-Version: 0.6.0
+Swamp-Version: 0.7.0
 From: Alice
 DID: did:key:z6Mk...
 Message-ID: 2026-05-05-following-current
 Date: 2026-05-05T09:12-0700
 Subject: who I'm reading right now
 Feed: https://alice.example.com/swamp/latest
-Content-Type: application/swamp; kind=following; v=0.6.0
+Content-Type: application/swamp; kind=following; v=0.7.0
 
 # craft
 did:key:z6Bo... https://bob.example.org/swamp/latest
@@ -762,7 +842,7 @@ did:key:z6Er... https://erin.example.com/swamp/latest
 A sibling `kind=post` written the same day might look like:
 
 ```
-Swamp-Version: 0.6.0
+Swamp-Version: 0.7.0
 From: Alice
 DID: did:key:z6Mk...
 Message-ID: 2026-05-05-following-commentary
@@ -771,7 +851,7 @@ Subject: notes on my current follows
 Feed: https://alice.example.com/swamp/latest
 Form: article
 References: did:key:z6Mk.../bafybei...following...post...cid
-Content-Type: application/swamp; kind=post; v=0.6.0
+Content-Type: application/swamp; kind=post; v=0.7.0
 
 A few words about the feeds I just published in my Following:
 post above. Bob writes long-form essays once a week and is the
@@ -812,7 +892,7 @@ Unfamiliar is not invalid. Carrying is about integrity in handling, not an oblig
 **The `ext=` parameter.** An extension-defined kind identifies its governing spec with an `ext=` parameter in `Content-Type:`, carried **in addition to** `v=`, never instead of it:
 
 ```
-Content-Type: application/swamp; kind=room-roster; v=0.6.0; ext=rooms/0.1
+Content-Type: application/swamp; kind=room-roster; v=0.7.0; ext=rooms/0.1
 ```
 
 `v=` names the envelope contract — which core version's canonicalization and signature rules any reader applies, including a reader that has never heard of the extension. `ext=` names the body contract — which extension spec, at which version, defines the kind's body grammar. Readers ignore `Content-Type:` parameters they do not recognize.
@@ -944,15 +1024,15 @@ The derived /now is **complementary to an authored `Form: now` post** (§4.5.1).
 
 ## 17. Open questions
 
-- **Richer DID methods.** v0.6.0 requires `did:key`; other methods are reserved. Which methods earn first-class support in a later release — `did:web` (next-most-likely, with multi-key support and `service` entries that could carry the `Feed:` locator natively), `did:nostr` (community-proposed wrapper for nostr secp256k1 pubkeys, no stable NIP yet), `did:plc`, others — is open. Promotion implies spec'ing DID-Document resolution and `assertionMethod`-purpose-checking, neither of which v0.6.0 requires.
-- **Relationship to Blockchain Commons XID.** XID (BCR-2024-010, with XID Edges added in BCR-2026-003, Jan 2026) solves the same identity problem Swamp needs solved — stable identifier, rotatable keys, extensible assertions — and does it more richly than `did:key`. Reference implementations exist: `bc-xid-rust` (early, not yet feature complete), `@bcts/xid` (npm), plus an XID-Quickstart repo. The cost is a hard dependency on Gordian Envelope / CBOR / the broader Blockchain Commons stack, which is heavier than `did:key`'s ~50 lines. **Pragmatic current path:** v0.6.0 keeps `did:key` as required; XID is a first-class compatibility target for a later release once `bc-xid-rust` stabilizes. See `related-work/hubert.md` for the full argument.
-- **Gordian Envelope for the canonical envelope shape.** Pairs with XID — same Blockchain Commons stack, designed to compose. Adoption awaits `bc-envelope-rust` reaching production-grade stability. v0.6.0 keeps Swamp's existing canonical-text envelope (RFC 822 + canonical-bytes signing).
-- **Per-entry annotations on `Following:` posts.** v0.6.0 ships a structured-only body (one `<DID, Feed-URL>` pair per line, no prose mixed in). Whether a future release adds per-entry tags, whys, or display names — and what shape that should take — is open. Recommendation against introducing structure prematurely; let practice surface what's needed.
-- **DNS TXT locator format for `Feed:`.** v0.6.0 specifies URL-only. A `Feed: _swamp.alice.example.com` form resolved via DNS TXT is a candidate for a later release; doesn't depend on website uptime.
+- **Richer DID methods.** v0.7.0 requires `did:key`; other methods are reserved. Which methods earn first-class support in a later release — `did:web` (next-most-likely, with multi-key support and `service` entries that could carry the `Feed:` locator natively), `did:nostr` (community-proposed wrapper for nostr secp256k1 pubkeys, no stable NIP yet), `did:plc`, others — is open. Promotion implies spec'ing DID-Document resolution and `assertionMethod`-purpose-checking, neither of which v0.7.0 requires.
+- **Relationship to Blockchain Commons XID.** XID (BCR-2024-010, with XID Edges added in BCR-2026-003, Jan 2026) solves the same identity problem Swamp needs solved — stable identifier, rotatable keys, extensible assertions — and does it more richly than `did:key`. Reference implementations exist: `bc-xid-rust` (early, not yet feature complete), `@bcts/xid` (npm), plus an XID-Quickstart repo. The cost is a hard dependency on Gordian Envelope / CBOR / the broader Blockchain Commons stack, which is heavier than `did:key`'s ~50 lines. **Pragmatic current path:** v0.7.0 keeps `did:key` as required; XID is a first-class compatibility target for a later release once `bc-xid-rust` stabilizes. See `related-work/hubert.md` for the full argument.
+- **Gordian Envelope for the canonical envelope shape.** Pairs with XID — same Blockchain Commons stack, designed to compose. Adoption awaits `bc-envelope-rust` reaching production-grade stability. v0.7.0 keeps Swamp's existing canonical-text envelope (RFC 822 + canonical-bytes signing).
+- **Per-entry annotations on `Following:` posts.** v0.7.0 ships a structured-only body (one `<DID, Feed-URL>` pair per line, no prose mixed in). Whether a future release adds per-entry tags, whys, or display names — and what shape that should take — is open. Recommendation against introducing structure prematurely; let practice surface what's needed.
+- **DNS TXT locator format for `Feed:`.** v0.7.0 specifies URL-only. A `Feed: _swamp.alice.example.com` form resolved via DNS TXT is a candidate for a later release; doesn't depend on website uptime.
 - **SSH keys as direct identity in the wire format.** Tooling-level support — implementations accepting SSH Ed25519 keys and deriving the equivalent `did:key` for signing — is encouraged; no spec change is needed for it. A later release may consider whether to spec SSH-key wire-form identity directly (e.g., `Key: ssh-ed25519 AAAAC3...` alongside or in place of `DID:`), trading W3C DID conventions for ecosystem alignment with the most-deployed identity infrastructure on developer machines.
 - **Agent ↔ Swamp interaction UX.** How does a human skim their own agent's recent sightings quickly? Email-inbox-shaped? Wiki-shaped? Something else?
 - **Indexing at scale.** How to handle a world where many sightings on many posts starts to be a lot of bytes — does this stay in the "small enough to not worry" zone for a long time, or does some kind of indexing become necessary?
 
 ---
 
-*Interoperability will require tightening canonicalization further and producing reference implementations. v0.6.0 commits to `did:key` and reintroduces `Feed:`-based discovery; further DID-method work is in §3.3 and §17.*
+*Interoperability will require tightening canonicalization further and producing reference implementations. v0.7.0 pins the post-CID profile, mandates mnemonic key custody for minting tools, and adds markdown bodies with images by content address; further DID-method work is in §3.4 and §17.*

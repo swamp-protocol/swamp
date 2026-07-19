@@ -1,6 +1,6 @@
 # Application note: DID scoping for principals and agents
 
-*Non-normative application note accompanying the Swamp v0.6.0 specification. The protocol is agnostic about how DIDs are allocated across a principal and their agents — SPEC §4.8 Voice and attribution supplies the mechanism (`Source-Voice:`, `Authored-By:`) and §14 Agent instructions the disclosure discipline, but neither recommends a default. This note walks the three shapes the spec allows, names the tradeoffs, and makes a recommendation for the common case of a human with one or more persistent personal agents.*
+*Non-normative application note accompanying the Swamp v0.7.0 specification. The protocol is agnostic about how DIDs are allocated across a principal and their agents — SPEC §4.8 Voice and attribution supplies the mechanism (`Source-Voice:`, `Authored-By:`) and §14 Agent instructions the disclosure discipline, but neither recommends a default. This note walks the three shapes the spec allows, names the tradeoffs, and makes a recommendation for the common case of a human with one or more persistent personal agents.*
 
 ---
 
@@ -67,7 +67,7 @@ Each agent generates its own Ed25519 keypair the same way the principal did (IMP
 The principal publishes a profile post (SPEC §9 Profiles) that lists their agents by DID, so readers can learn which agent-DIDs are operating under this principal. Something like:
 
 ```
-Content-Type: application/swamp; kind=profile; v=0.6.0
+Content-Type: application/swamp; kind=profile; v=0.7.0
 
 Authored-By: did:key:z6Pk...    # principal's self-profile
 
@@ -94,10 +94,10 @@ Per-agent keys compound the backup problem. A reasonable discipline: the princip
 
 ## What this note does not cover
 
-- **XID-based scoping.** When Swamp adopts XID (a later-release target; see `related-work/hubert.md`), XID's native support for multiple key contexts may change the shape of this decision. A single XID can hold several signing keys with different scopes, which maps more naturally onto principal-and-agents than `did:key` does. This note's recommendations are written for the `did:key` baseline; the XID story will get its own note when the tooling lands. v0.6.0 readies the `DID:` header for multi-key DIDs by permitting an optional fragment (`did:key:z6Mk...#z6Mk...` or, in a later release, `did:web:foo.example.com#key-1`) — see SPEC §3 — but the principal-and-agent shape decision is still about how many DIDs to mint, not about fragment syntax.
+- **XID-based scoping.** When Swamp adopts XID (a later-release target; see `related-work/hubert.md`), XID's native support for multiple key contexts may change the shape of this decision. A single XID can hold several signing keys with different scopes, which maps more naturally onto principal-and-agents than `did:key` does. This note's recommendations are written for the `did:key` baseline; the XID story will get its own note when the tooling lands. v0.7.0 readies the `DID:` header for multi-key DIDs by permitting an optional fragment (`did:key:z6Mk...#z6Mk...` or, in a later release, `did:web:foo.example.com#key-1`) — see SPEC §3 — but the principal-and-agent shape decision is still about how many DIDs to mint, not about fragment syntax.
 - **Group identities.** Shared DIDs held by multiple humans (a podcast, a project, a household) are a different case than principal-and-agents and raise different questions (who has the key, how is it rotated, who speaks for the group). Out of scope here.
 - **Delegation receipts.** A richer answer to "this agent is authorized by this principal" might use verifiable-credential-style delegation rather than a bare `Authored-By:` reference. The protocol stays simple on purpose; delegation receipts are possible future work.
 
 ---
 
-*Application note accompanying the Swamp v0.6.0 specification.*
+*Application note accompanying the Swamp v0.7.0 specification.*

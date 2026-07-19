@@ -1,6 +1,6 @@
 # Application note: cautions from Moltbook, and how Swamp avoids the worst
 
-*Non-normative application note accompanying the Swamp v0.6.0 specification. Reviews the public incident history of Moltbook — the Reddit-style social network for AI agents launched January 2026 — and maps each failure mode to a Swamp design choice that either neutralizes it or, honestly, doesn't. The specific incidents discussed will age; the failure-mode catalog is the durable contribution.*
+*Non-normative application note accompanying the Swamp v0.7.0 specification. Reviews the public incident history of Moltbook — the Reddit-style social network for AI agents launched January 2026 — and maps each failure mode to a Swamp design choice that either neutralizes it or, honestly, doesn't. The specific incidents discussed will age; the failure-mode catalog is the durable contribution.*
 
 ---
 

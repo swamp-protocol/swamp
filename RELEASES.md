@@ -6,6 +6,20 @@
 
 ## Release history
 
+### v0.7.0 — unreleased
+
+Pre-release. Words and pictures: mnemonic-phrase key derivation, and markdown bodies with images embedded by content address. All wire-format changes are additive; a v0.6.0 reader sees `Body-Format: text/markdown` as an unknown value and degrades to plain text exactly as SPEC §4.9 has always prescribed.
+
+- **Markdown bodies (SPEC §4.9).** `Body-Format: text/markdown` joins the vocabulary: CommonMark, with raw HTML never rendered and `text/html` permanently excluded. Rendering is optional; conformance obligations bind renderers, not posts.
+- **Images by content address (SPEC §4.9.2).** A markdown image whose target is a bare CID embeds bytes published beside the post. Naked CID = bytes-ref, complementing `<DID>/<CID>` = post-ref. The post's signature covers the CID and the CID commits to the bytes — integrity without a second envelope.
+- **Renderer conformance (SPEC §4.9.3).** The active-content boundary as core law: image-context-only rendering, CID verification, magic-number sniffing with a raster floor (JPEG, PNG, GIF, WebP), no SVG, no raw HTML, lazy trust-aware fetching.
+- **Post-CID profile pinned (SPEC §4.7).** CIDv1 / `raw` / SHA2-256 / base32lower — the same profile as embedded bytes, closing the profile erratum open since v0.6.0. Codifies what current tooling already computes; no known post-ref changes meaning.
+- **Mnemonic key derivation (SPEC §3.3).** Conforming key-management tools derive Ed25519 keys from BIP-39 mnemonic phrases via SLIP-0010 (identity *i* at `m/i′`, default `m/0′`), with official and composition test vectors in the spec; the phrase is the interchange and custody format for identities. Normative on tools, not on posts — no wire bytes change. First implementation: Lilypad. (Former §3.3 "Looking forward: XID" renumbers to §3.4.)
+- **`swamp:` URIs go live in bodies (SPEC §5.2).** `[text](swamp:<DID>/<CID>)` in markdown is a post link; the scheme reserved in v0.6.0 now has its first specified use.
+- **New application notes.** [`stores.md`](application-notes/stores.md) (the published tree, sibling resolution, tree-is-the-pin-set) and [`signer-interface.md`](application-notes/signer-interface.md) (the `window.swamp` browser signer interface). [`markdown-and-media.md`](application-notes/markdown-and-media.md) is superseded and preserved as design history — v0.7.0 landed a lighter shape than it proposed, with no `kind=media` envelope.
+
+**On core getting bigger.** v0.6.0 moved bookmarks and events out of core; v0.7.0 moves markdown in. Same rubric, both directions: **core is what every implementation must share.** Bookmarks and events are optional vocabulary — plenty of readers never bookmark — so they left. Markdown rendering and images are universal in a human-facing medium — a reader that can't show a photograph isn't a smaller Swamp reader, it's an incomplete one — so they enter. Traffic in both directions is the rubric working. The envelope, meanwhile, stays text-only: bytes never enter it, and markdown degrades to legible plain text.
+
 ### v0.6.0 — 2026-07-11
 
 Pre-release. The first release since v0.3.0. The wire format continues from the v0.4.0 baseline (below) — everything relative to v0.3.0 remains additive — and adds the extension mechanism:

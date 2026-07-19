@@ -1,6 +1,6 @@
 # Application note: Following: posts and the commentary pattern
 
-*Non-normative application note accompanying the Swamp v0.6.0 specification. SPEC §9 defines the normative shape of `Following:` posts: structured-only line-oriented body, parallel to sightings, no prose mixed in. This note walks through what that shape looks like in practice and how authors who want to comment on their follows do so cleanly via sibling `kind=post` posts.*
+*Non-normative application note accompanying the Swamp v0.7.0 specification. SPEC §9 defines the normative shape of `Following:` posts: structured-only line-oriented body, parallel to sightings, no prose mixed in. This note walks through what that shape looks like in practice and how authors who want to comment on their follows do so cleanly via sibling `kind=post` posts.*
 
 ---
 
@@ -21,14 +21,14 @@ This separation matches Swamp's existing pattern for sightings (§7): the sighti
 A `Following:` post:
 
 ```
-Swamp-Version: 0.6.0
+Swamp-Version: 0.7.0
 From: Alice
 DID: did:key:z6Mk...
 Message-ID: 2026-05-05-following-spring
 Date: 2026-05-05T10:00-0700
 Subject: who I'm reading right now
 Feed: https://alice.example.com/swamp/latest
-Content-Type: application/swamp; kind=following; v=0.6.0
+Content-Type: application/swamp; kind=following; v=0.7.0
 
 # craft
 did:key:z6Bo... https://bob.example.org/swamp/latest
@@ -51,7 +51,7 @@ Comment lines (starting with `#`) and blank lines are preserved but ignored by p
 A sibling commentary post written the same day:
 
 ```
-Swamp-Version: 0.6.0
+Swamp-Version: 0.7.0
 From: Alice
 DID: did:key:z6Mk...
 Message-ID: 2026-05-05-following-commentary
@@ -60,7 +60,7 @@ Subject: notes on my current follows
 Feed: https://alice.example.com/swamp/latest
 Form: article
 References: did:key:z6Mk.../bafybei...the-following-cid
-Content-Type: application/swamp; kind=post; v=0.6.0
+Content-Type: application/swamp; kind=post; v=0.7.0
 
 I just published my spring follow list. A few words on the choices.
 
@@ -122,6 +122,6 @@ The protocol doesn't enforce snapshot frequency; the social layer does. Spamming
 
 ## Forward compatibility
 
-v0.6.0 ships `Following:` with a structured-only body and no per-entry metadata. If practice surfaces a real need for per-entry annotations (tags, whys, display names), a later release can extend the body grammar additively — for example, with an optional third column whose semantics are reserved.
+v0.7.0 ships `Following:` with a structured-only body and no per-entry metadata. If practice surfaces a real need for per-entry annotations (tags, whys, display names), a later release can extend the body grammar additively — for example, with an optional third column whose semantics are reserved.
 
-The deliberate stance for v0.6.0 is *don't pre-impose structure*. Authors with rich opinions about specific entries publish commentary posts that reference the `Following:` post. The shape of the artifact follows the shape of the thought.
+The deliberate stance for v0.7.0 is *don't pre-impose structure*. Authors with rich opinions about specific entries publish commentary posts that reference the `Following:` post. The shape of the artifact follows the shape of the thought.

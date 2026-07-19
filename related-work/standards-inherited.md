@@ -39,4 +39,4 @@ Signature blocks in the post body use standard [Base64](https://www.rfc-editor.o
 
 ---
 
-*Related-work note accompanying the Swamp v0.6.0 specification.*
+*Related-work note accompanying the Swamp v0.7.0 specification.*

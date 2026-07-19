@@ -1,12 +1,12 @@
 # Application note: extensions and negotiation
 
-*Non-normative application note accompanying the Swamp v0.6.0 specification. SPEC §10 Extensions defines the mechanics — the extension invariant, the `ext=` parameter, and what extensions may and may not do. This note explains the stance behind those mechanics: why Swamp welcomes competing extensions, what we expect standardization to look like in the agent era, and how to decide whether something should be an extension at all.*
+*Non-normative application note accompanying the Swamp v0.7.0 specification. SPEC §10 Extensions defines the mechanics — the extension invariant, the `ext=` parameter, and what extensions may and may not do. This note explains the stance behind those mechanics: why Swamp welcomes competing extensions, what we expect standardization to look like in the agent era, and how to decide whether something should be an extension at all.*
 
 ---
 
 ## Extensions
 
-An extension is a published spec that adds vocabulary to Swamp — new headers, new post kinds, new body grammars — without touching the core. An extension lives in its own repository, versions independently of core Swamp, and declares which core version it extends. On the wire, an extension-defined kind identifies its governing spec with an `ext=` parameter carried alongside the core `v=` in `Content-Type:` — for example, `application/swamp; kind=room-roster; v=0.6.0; ext=rooms/0.1` says "verify this envelope under core 0.6.0; the body grammar belongs to the rooms extension at 0.1."
+An extension is a published spec that adds vocabulary to Swamp — new headers, new post kinds, new body grammars — without touching the core. An extension lives in its own repository, versions independently of core Swamp, and declares which core version it extends. On the wire, an extension-defined kind identifies its governing spec with an `ext=` parameter carried alongside the core `v=` in `Content-Type:` — for example, `application/swamp; kind=room-roster; v=0.7.0; ext=rooms/0.1` says "verify this envelope under core 0.7.0; the body grammar belongs to the rooms extension at 0.1."
 
 Extensions ride on the core's must-carry invariant: because every core reader preserves headers it doesn't recognize and verifies posts of kinds it doesn't recognize, extension traffic flows through the whole network safely — parsed by the software that speaks it, carried intact by the software that doesn't. Core Swamp stays small; capability grows at the edges.
 
@@ -48,6 +48,8 @@ Not everything new needs to be an extension. The test is whether you are introdu
 - **Something achievable with existing kinds plus convention** — a topic, a practice, a shared habit of tagging or phrasing → just post. Conventions are not protocol. They need no declaration, no version, and no permission.
 
 Conventions may harden into extensions later, if practice shows that structure is genuinely needed — that is selection working as intended, and it is the preferred order: practice first, structure second.
+
+One refinement on the first bullet: new vocabulary *defaults* to an extension, and stays there unless it passes a stricter test — **universality**. Vocabulary that every implementation must share to participate in the medium belongs in core; vocabulary that only some need belongs at the edges. This is the rubric that moved bookmarks and events out of core in v0.6.0 (optional — not everyone bookmarks) and markdown bodies into core in v0.7.0 (universal — every human-facing renderer shows images). It binds in both directions, and the burden of proof sits with whoever claims universality.
 
 The traffic flows the other way too: bookmarks and events / RSVPs were core kinds in Swamp's earliest releases and moved out to extensions in v0.6.0. The rubric binds the core as much as anyone — vocabulary that doesn't have to be common to everyone shouldn't be in the spec everyone must read.
 
