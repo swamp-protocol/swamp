@@ -6,7 +6,7 @@
 
 ## Release history
 
-### v0.7.0 — unreleased
+### v0.7.0 — 2026-07-18
 
 Pre-release. Words and pictures: mnemonic-phrase key derivation, and markdown bodies with images embedded by content address. All wire-format changes are additive; a v0.6.0 reader sees `Body-Format: text/markdown` as an unknown value and degrades to plain text exactly as SPEC §4.9 has always prescribed.
 
