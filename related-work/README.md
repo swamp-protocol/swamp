@@ -10,6 +10,7 @@
 - **[ipfs.md](ipfs.md)** — the content-addressed substrate Swamp assumes, and the reasons it's assumed rather than required.
 - **[dids.md](dids.md)** — W3C Decentralized Identifiers, `did:key` baseline, the method-agnostic stance.
 - **[nostr.md](nostr.md)** — Swamp's closest existing cousin. Compare and contrast: signed posts, relay vs. content-addressed, JSON vs. header format, the sightings layer.
+- **[buzz.md](buzz.md)** — Block's Nostr-based team workspace where humans and agents are equal members. Convergent on keyed agent identity; occupies the owned, membered territory Swamp deliberately declines.
 - **[scuttlebutt.md](scuttlebutt.md)** — Secure Scuttlebutt (SSB). Signed append-only feeds, gossip-replicated peer-to-peer. Strong shape match on signed-chatter register; differs on append-only chain vs. freestanding posts.
 - **[atproto.md](atproto.md)** — AT Protocol, Bluesky, Atmosphere. A close cousin with a richer schema and hosting model.
 - **[activitypub.md](activitypub.md)** — the Fediverse and Mastodon. Shared spirit, different mechanics; `fediverse:` appears in Swamp's `Contact:` vocabulary.
